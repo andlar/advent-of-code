@@ -6,6 +6,7 @@
     "author": "Andrew Larned",
     "license": "MIT",
     "private": false,
+    "repository": "https://github.com/andlar/aoc",
     "scripts": {
         "test": "jest --watch --coverage",
         "test:once": "jest --coverage"
@@ -16,7 +17,7 @@
         "@babel/preset-env": "^7.7.4",
         "@commitlint/cli": "^8.2.0",
         "@commitlint/config-conventional": "^8.2.0",
-        "husky": "^3.1.0",
+        "husky": "^4.0.0-beta.5",
         "jest": "^24.9.0"
     }
 }
