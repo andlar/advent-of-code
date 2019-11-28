@@ -7,7 +7,8 @@
     "license": "MIT",
     "private": false,
     "scripts": {
-        "test": "jest --watch --coverage"
+        "test": "jest --watch --coverage",
+        "test:once": "jest --coverage"
     },
     "devDependencies": {
         "@babel/cli": "^7.7.4",
