@@ -6,7 +6,7 @@
     "author": "Andrew Larned",
     "license": "MIT",
     "private": false,
-    "repository": "https://github.com/andlar/aoc",
+    "repository": "https://github.com/andlar/advent-of-code",
     "scripts": {
         "test": "jest --watch --coverage",
         "test:once": "jest --coverage"
