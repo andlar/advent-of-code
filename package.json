@@ -1,0 +1,18 @@
+{
+    "name": "advent-of-code",
+    "version": "0.0.0-development",
+    "description": "Advent of Code (https://adventofcode.com/)",
+    "main": "index.js",
+    "author": "Andrew Larned",
+    "license": "MIT",
+    "private": false,
+    "scripts": {
+        "test": "jest --watch --coverage"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.7.4",
+        "@babel/core": "^7.7.4",
+        "@babel/preset-env": "^7.7.4",
+        "jest": "^24.9.0"
+    }
+}
