@@ -1,33 +1,4 @@
-const takeStep = (codes, index) => {
-    let nextStep = codes.slice();
-    switch (nextStep[index]) {
-    case 1:
-        nextStep[nextStep[index + 3]] = nextStep[nextStep[index + 1]] + nextStep[nextStep[index + 2]];
-        break;
-    case 2:
-        nextStep[nextStep[index + 3]] = nextStep[nextStep[index + 1]] * nextStep[nextStep[index + 2]];
-        break;
-    case 99:
-        return {done: true, codes: nextStep};
-    default:
-        throw new Error('halt and catch fire');
-    }
-    return nextStep;
-}
-
-const arrayEquals = (array1, array2) => array1.length === array2.length && array1.every((value, index) => value === array2[index]);
-
-const calculateSteps = (codes) => {
-    let index = 0;
-    let prevStep = codes.slice();
-    let nextStep = takeStep(prevStep, index);
-    while (!nextStep.done) {
-        index += 4;
-        prevStep = nextStep.slice();
-        nextStep = takeStep(prevStep, index);
-    }
-    return nextStep;
-}
+import { calculateSteps } from './intcode';
 
 const findInputs = (memory, target) => {
     let data = {
@@ -51,4 +22,4 @@ const findInputs = (memory, target) => {
        }
     }
 }
-export { takeStep, arrayEquals, calculateSteps, findInputs };
+export { findInputs };
