@@ -1,5 +1,5 @@
 import { Point } from '../src/point';
-import { genPoints, getClosestDistance, getShortestPath } from '../src/day3';
+import { genPoints, getClosestDistance, getShortestPath, getGridBoundary, drawGrid } from '../src/day3';
 
 let wires = [
     'R8,U5,L5,D3',
@@ -124,5 +124,72 @@ describe('day 3-b tests', () => {
         points = genPoints(origin, wire2, 'w2', points);
         let distance = getShortestPath(points);
         expect(distance).toEqual(43258);
+    });
+});
+
+describe('to display wires', () => {
+    let origin;
+    beforeEach(() => {
+        origin = new Point(0, 0);
+    });
+
+    it('should get boundaries', () => {
+        let points = genPoints(origin, 'R8,L12', 'w1', {});
+        let boundary = getGridBoundary(points);
+        expect(boundary).toEqual({
+            minX: -4,
+            minY: 0,
+            maxX: 8,
+            maxY: 0,
+        });
+    });
+
+    it('should get boundaries of bigger things', () => {
+        let points = genPoints(origin, wires[0], 'w1', {});
+        points = genPoints(origin, wires[1], 'w2', points);
+        let boundary = getGridBoundary(points);
+        expect(boundary).toEqual({
+            minX: 0,
+            minY: 0,
+            maxX: 8,
+            maxY: 7,
+        });
+    });
+
+    it('should get boundaries of bigger things 2', () => {
+        let points = genPoints(origin, wires[1], 'w1', {});
+        points = genPoints(origin, wires[2], 'w2', points);
+        let boundary = getGridBoundary(points);
+        expect(boundary).toEqual({
+            minX: 0,
+            minY: -30,
+            maxX: 217,
+            maxY: 53,
+        });
+    });
+
+    it('should get boundaries of bigger things 3', () => {
+        let points = genPoints(origin, wires[3], 'w1', {});
+        points = genPoints(origin, wires[4], 'w2', points);
+        let boundary = getGridBoundary(points);
+        expect(boundary).toEqual({
+            minX: 0,
+            minY: -16,
+            maxX: 238,
+            maxY: 117,
+        });
+    });
+
+    it('should draw a grid based on a boundary', () => {
+        let boundary = {
+            minX: -2,
+            minY: -1,
+            maxX: 5,
+            maxY: 2,
+        }
+        let points = {'0:0': 'o'};
+        let grid = drawGrid(points, boundary);
+        expect(grid).toBe('........|........|..o.....|........');
+        //console.log(grid.replace(/\|/g, '\n'));
     });
 });
