@@ -1,24 +1,51 @@
 const takeStep = state => {
     let nextState = {...state};
     let opcode = state.memory[state.pointer];
-    switch (opcode) {
-    case 1:
-        nextState.memory[nextState.memory[state.pointer + 3]] = nextState.memory[nextState.memory[state.pointer + 1]] + nextState.memory[nextState.memory[state.pointer + 2]];
+    let instruction = opcode % 100;
+    let p1, p2, p3;
+    if (Math.floor(opcode / 100) % 10 === 0) {
+        p1 = nextState.memory[nextState.memory[state.pointer + 1]];
+    } else {
+        p1 = nextState.memory[state.pointer + 1];
+    }
+    if (Math.floor(opcode / 1000) % 10 === 0) {
+        p2 = nextState.memory[nextState.memory[state.pointer + 2]];
+    } else {
+        p2 = nextState.memory[state.pointer + 2];
+    }
+    p3 = nextState.memory[state.pointer + 3];
+    switch (instruction) {
+    case 1: // add
+        nextState.memory[p3] = p1 + p2;
         nextState.pointer += 4;
         break;
-    case 2:
-        nextState.memory[nextState.memory[state.pointer + 3]] = nextState.memory[nextState.memory[state.pointer + 1]] * nextState.memory[nextState.memory[state.pointer + 2]];
+    case 2: // multiply
+        nextState.memory[p3] = p1 * p2;
         nextState.pointer += 4;
         break;
-    case 3:
+    case 3: // input
         nextState.memory[nextState.memory[state.pointer + 1]] = nextState.input.shift();
         nextState.pointer += 2;
         break;
-    case 4:
-        nextState.output.push(nextState.memory[nextState.memory[state.pointer + 1]]);
+    case 4: // output
+        nextState.output.push(p1);
         nextState.pointer += 2;
         break;
-    case 99:
+    case 5: // jump if true
+        if (p1 === 0) {
+            nextState.pointer += 3;
+        } else {
+            nextState.pointer = p2;
+        }
+        break;
+    case 6: // jump if true
+        if (p1 !== 0) {
+            nextState.pointer += 3;
+        } else {
+            nextState.pointer = p2;
+        }
+        break;
+    case 99: // end
         nextState.done = true;
         break;
     default:
