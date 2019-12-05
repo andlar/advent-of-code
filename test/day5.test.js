@@ -14,4 +14,12 @@ describe('day 5 tests', () => {
 });
 
 describe('day 2-b tests', () => {
+    it('should part 2', () => {
+        let state = {
+            memory: [...input],
+            input: [5],
+            output: [],
+        }
+        expect(runProgram(state).output).toEqual([1558663]);
+    });
 });
