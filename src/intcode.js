@@ -1,33 +1,41 @@
-const takeStep = (memory, pointer) => {
-    let nextStep = memory.slice();
-    let opcode = nextStep[pointer];
+const takeStep = state => {
+    let nextState = {...state};
+    let opcode = state.memory[state.pointer];
     switch (opcode) {
     case 1:
-        nextStep[nextStep[pointer + 3]] = nextStep[nextStep[pointer + 1]] + nextStep[nextStep[pointer + 2]];
+        nextState.memory[nextState.memory[state.pointer + 3]] = nextState.memory[nextState.memory[state.pointer + 1]] + nextState.memory[nextState.memory[state.pointer + 2]];
+        nextState.pointer += 4;
         break;
     case 2:
-        nextStep[nextStep[pointer + 3]] = nextStep[nextStep[pointer + 1]] * nextStep[nextStep[pointer + 2]];
+        nextState.memory[nextState.memory[state.pointer + 3]] = nextState.memory[nextState.memory[state.pointer + 1]] * nextState.memory[nextState.memory[state.pointer + 2]];
+        nextState.pointer += 4;
+        break;
+    case 3:
+        nextState.memory[nextState.memory[state.pointer + 1]] = nextState.input.shift();
+        nextState.pointer += 2;
+        break;
+    case 4:
+        nextState.output.push(nextState.memory[nextState.memory[state.pointer + 1]]);
+        nextState.pointer += 2;
         break;
     case 99:
-        return {done: true, codes: nextStep};
+        nextState.done = true;
+        break;
     default:
         throw new Error('halt and catch fire');
     }
-    return nextStep;
+    return nextState;
 }
 
 const arrayEquals = (arr1, arr2) => arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index]);
 
-const calculateSteps = (memory) => {
-    let pointer = 0;
-    let prevStep = memory.slice();
-    let nextStep = takeStep(prevStep, pointer);
-    while (!nextStep.done) {
-        pointer += 4;
-        prevStep = nextStep.slice();
-        nextStep = takeStep(prevStep, pointer);
+const runProgram = (state) => {
+    let nextState = {...state};
+    nextState.pointer = 0;
+    while (!nextState.done) {
+        nextState = {...takeStep(nextState)};
     }
-    return nextStep;
+    return nextState;
 }
 
-export { takeStep, arrayEquals, calculateSteps };
+export { takeStep, arrayEquals, runProgram };
