@@ -38,12 +38,20 @@ const takeStep = state => {
             nextState.pointer = p2;
         }
         break;
-    case 6: // jump if true
+    case 6: // jump if false
         if (p1 !== 0) {
             nextState.pointer += 3;
         } else {
             nextState.pointer = p2;
         }
+        break;
+    case 7: // jump if false
+        nextState.memory[p3] = p1 < p2 ? 1 : 0;
+        nextState.pointer += 4;
+        break;
+    case 8: // jump if false
+        nextState.memory[p3] = p1 === p2 ? 1 : 0;
+        nextState.pointer += 4;
         break;
     case 99: // end
         nextState.done = true;

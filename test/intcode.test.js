@@ -97,7 +97,29 @@ describe('intcode tests', () => {
         });
 
         describe('logic', () => {
+            it('should handle code 7', () => {
+                state.memory = '1107,3,70,4,4'.split(',').map(s => parseInt(s, 10));
+                let nextState = takeStep(state);
+                expect(nextState.memory).toEqual([1107,3,70,4,1]);
+                expect(nextState.pointer).toEqual(4);
+                state.memory = '1107,300,70,4,4'.split(',').map(s => parseInt(s, 10));
+                nextState = takeStep(state);
+                expect(nextState.memory).toEqual([1107,300,70,4,0]);
+                expect(nextState.pointer).toEqual(4);
+            });
+
+            it('should handle code 8', () => {
+                state.memory = '1108,3,3,4,4'.split(',').map(s => parseInt(s, 10));
+                let nextState = takeStep(state);
+                expect(nextState.memory).toEqual([1108,3,3,4,1]);
+                expect(nextState.pointer).toEqual(4);
+                state.memory = '1108,300,80,4,4'.split(',').map(s => parseInt(s, 10));
+                nextState = takeStep(state);
+                expect(nextState.memory).toEqual([1108,300,80,4,0]);
+                expect(nextState.pointer).toEqual(4);
+            });
         });
+
         it('should handle code 99', () => {
             state.memory = '3500,9,10,70,2,3,11,0,99,30,40,50'.split(',').map(s => parseInt(s, 10));
             state.pointer = 8;
@@ -172,8 +194,8 @@ describe('intcode tests', () => {
             });
         });
 
-        describe('logic', () => {
-            it('should run codes that jump', () => {
+        describe('jumping', () => {
+            it('should run codes that jump in position mode', () => {
                 state.memory = '3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9'.split(',').map(s => parseInt(s, 10));
                 state.input = [0];
                 let endState = runProgram(state);
@@ -183,6 +205,85 @@ describe('intcode tests', () => {
                 state.output = [];
                 endState = runProgram(state);
                 expect(endState.output).toEqual([1]);
+            });
+
+            it('should run codes that jump in immediate mode', () => {
+                state.memory = '3,3,1105,-1,9,1101,0,0,12,4,12,99,1'.split(',').map(s => parseInt(s, 10));
+                state.input = [0];
+                let endState = runProgram(state);
+                expect(endState.output).toEqual([0]);
+                state.memory = '3,3,1105,-1,9,1101,0,0,12,4,12,99,1'.split(',').map(s => parseInt(s, 10));
+                state.input = [34];
+                state.output = [];
+                endState = runProgram(state);
+                expect(endState.output).toEqual([1]);
+            });
+        });
+
+        describe('logic', () => {
+            it('should run codes that measure equal in position mode', () => {
+                state.memory = '3,9,8,9,10,9,4,9,99,-1,8'.split(',').map(s => parseInt(s, 10));
+                state.input = [0];
+                let endState = runProgram(state);
+                expect(endState.output).toEqual([0]);
+                state.memory = '3,9,8,9,10,9,4,9,99,-1,8'.split(',').map(s => parseInt(s, 10));
+                state.input = [8];
+                state.output = [];
+                endState = runProgram(state);
+                expect(endState.output).toEqual([1]);
+            });
+
+            it('should run codes that measure less than in position mode', () => {
+                state.memory = '3,9,7,9,10,9,4,9,99,-1,8'.split(',').map(s => parseInt(s, 10));
+                state.input = [10];
+                let endState = runProgram(state);
+                expect(endState.output).toEqual([0]);
+                state.memory = '3,9,7,9,10,9,4,9,99,-1,8'.split(',').map(s => parseInt(s, 10));
+                state.input = [3];
+                state.output = [];
+                endState = runProgram(state);
+                expect(endState.output).toEqual([1]);
+            });
+
+            it('should run codes that measure equal in immediate mode', () => {
+                state.memory = '3,3,1108,-1,8,3,4,3,99'.split(',').map(s => parseInt(s, 10));
+                state.input = [0];
+                let endState = runProgram(state);
+                expect(endState.output).toEqual([0]);
+                state.memory = '3,3,1108,-1,8,3,4,3,99'.split(',').map(s => parseInt(s, 10));
+                state.input = [8];
+                state.output = [];
+                endState = runProgram(state);
+                expect(endState.output).toEqual([1]);
+            });
+
+            it('should run codes that measure less than in position mode', () => {
+                state.memory = '3,3,1107,-1,8,3,4,3,99'.split(',').map(s => parseInt(s, 10));
+                state.input = [10];
+                let endState = runProgram(state);
+                expect(endState.output).toEqual([0]);
+                state.memory = '3,3,1107,-1,8,3,4,3,99'.split(',').map(s => parseInt(s, 10));
+                state.input = [3];
+                state.output = [];
+                endState = runProgram(state);
+                expect(endState.output).toEqual([1]);
+            });
+
+            it('should handle a larger example', () => {
+                state.memory = '3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99'.split(',').map(s => parseInt(s, 10));
+                state.input = [7];
+                let endState = runProgram(state);
+                expect(endState.output).toEqual([999]);
+                state.memory = '3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99'.split(',').map(s => parseInt(s, 10));
+                state.input = [8];
+                state.output = [];
+                endState = runProgram(state);
+                expect(endState.output).toEqual([1000]);
+                state.memory = '3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99'.split(',').map(s => parseInt(s, 10));
+                state.input = [9];
+                state.output = [];
+                endState = runProgram(state);
+                expect(endState.output).toEqual([1001]);
             });
         });
     });
