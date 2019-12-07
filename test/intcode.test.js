@@ -8,6 +8,7 @@ describe('intcode tests', () => {
             memory: [],
             pointer: 0,
             done: undefined,
+            awaitingInput: undefined,
             input: [],
             output: [],
         };
@@ -284,6 +285,17 @@ describe('intcode tests', () => {
                 state.output = [];
                 endState = runProgram(state);
                 expect(endState.output).toEqual([1001]);
+            });
+        });
+
+        describe('awaiting input', () => {
+            it('should pause for inputs', () => {
+                state.memory = '3,0,3,0,99'.split(',').map(s => parseInt(s, 10));
+                state.input = [20];
+                let endState = runProgram(state);
+                expect(endState.memory).toEqual([20,0,3,0,99]);
+                expect(endState.input).toEqual([]);
+                expect(endState.awaitingInput).toBe(true);
             });
         });
     });
