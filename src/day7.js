@@ -1,15 +1,21 @@
 import { runProgram } from './intcode';
 
+const amplify = (state, mode) => {
+    let next = {...state};
+    next.input = [...state.output];
+    next.input.unshift(mode);
+    next.output = [];
+    next.done = false;
+    return runProgram(next);
+}
+
 const getThrusterSignal = (state, setting) => {
-    let nextState = {...state};
-    while (setting.length > 0) {
-        nextState.output = [];
-        nextState.done = false;
-        nextState.input.unshift(setting.shift());
-        nextState = runProgram(nextState);
-        nextState.input = [...nextState.output];
+    let output = {...state};
+    state.output.push(0);
+    while (setting.length) {
+        output = amplify(output, setting.shift());
     }
-    return nextState;
+    return output;
 }
 
 const findAllSignals = memory => {
