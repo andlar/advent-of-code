@@ -26,7 +26,6 @@ const takeStep = state => {
     case 3: // input
         if (nextState.input.length === 0) {
             nextState.awaitingInput = true;
-            nextState.done = true;
         } else {
             nextState.awaitingInput = false;
             nextState.memory[nextState.memory[state.pointer + 1]] = nextState.input.shift();
@@ -73,10 +72,17 @@ const arrayEquals = (arr1, arr2) => arr1.length === arr2.length && arr1.every((v
 const runProgram = (state) => {
     let nextState = {...state};
     nextState.pointer = 0;
+    return continueProgram(nextState);
+}
+
+const continueProgram = (state) => {
+    let nextState = {...state};
+    nextState.done = false;
+    nextState.awaitingInput = false;
     while (!nextState.done && !nextState.awaitingInput) {
         nextState = {...takeStep(nextState)};
     }
     return nextState;
 }
 
-export { takeStep, arrayEquals, runProgram };
+export { takeStep, arrayEquals, runProgram, continueProgram };
