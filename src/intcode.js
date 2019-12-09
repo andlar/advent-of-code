@@ -1,3 +1,7 @@
+const zeroIfEmpty = val => {
+    return typeof val === 'number' ? val : 0;
+}
+
 const takeStep = state => {
     let nextState = {...state};
     let opcode = state.memory[state.pointer];
@@ -5,15 +9,28 @@ const takeStep = state => {
     let p1, p2, p3;
     if (Math.floor(opcode / 100) % 10 === 0) {
         p1 = nextState.memory[nextState.memory[state.pointer + 1]];
-    } else {
+    } else if (Math.floor(opcode / 100) % 10 === 1) {
         p1 = nextState.memory[state.pointer + 1];
+    } else if (Math.floor(opcode / 100) % 10 === 2) {
+        p1 = nextState.memory[nextState.memory[state.pointer + 1] + state.relativeBase];
     }
+    p1 = zeroIfEmpty(p1);
     if (Math.floor(opcode / 1000) % 10 === 0) {
         p2 = nextState.memory[nextState.memory[state.pointer + 2]];
-    } else {
+    } else if (Math.floor(opcode / 1000) % 10 === 1) {
         p2 = nextState.memory[state.pointer + 2];
+    } else if (Math.floor(opcode / 1000) % 10 === 2) {
+        p2 = nextState.memory[nextState.memory[state.pointer + 2] + state.relativeBase];
     }
-    p3 = nextState.memory[state.pointer + 3];
+    if (Math.floor(opcode / 10000) % 10 === 0) {
+        p3 = nextState.memory[state.pointer + 3];
+    } else if (Math.floor(opcode / 10000) % 10 === 2) {
+        p3 = nextState.memory[state.pointer + 3] + state.relativeBase;
+    } else {
+        throw new Error('invalid mode');
+    }
+    p1 = zeroIfEmpty(p1);
+    p2 = zeroIfEmpty(p2);
     switch (instruction) {
     case 1: // add
         nextState.memory[p3] = p1 + p2;
@@ -28,7 +45,15 @@ const takeStep = state => {
             nextState.awaitingInput = true;
         } else {
             nextState.awaitingInput = false;
-            nextState.memory[nextState.memory[state.pointer + 1]] = nextState.input.shift();
+            if (Math.floor(opcode / 100) % 10 === 0) {
+                nextState.memory[nextState.memory[state.pointer + 1]] = nextState.input.shift();
+            } else if (Math.floor(opcode / 100) % 10 === 1) {
+                throw new Error('cannot write to self');
+            } else if (Math.floor(opcode / 100) % 10 === 2) {
+                nextState.memory[nextState.memory[state.pointer + 1] + state.relativeBase] = nextState.input.shift();
+            } else {
+                throw new Error('invalid mode');
+            }
             nextState.pointer += 2;
         }
         break;
@@ -58,6 +83,10 @@ const takeStep = state => {
         nextState.memory[p3] = p1 === p2 ? 1 : 0;
         nextState.pointer += 4;
         break;
+    case 9: // updated relativeBase
+        nextState.relativeBase += p1;
+        nextState.pointer += 2;
+        break;
     case 99: // end
         nextState.done = true;
         break;
@@ -72,6 +101,7 @@ const arrayEquals = (arr1, arr2) => arr1.length === arr2.length && arr1.every((v
 const runProgram = (state) => {
     let nextState = {...state};
     nextState.pointer = 0;
+    nextState.relativeBase = 0;
     return continueProgram(nextState);
 }
 

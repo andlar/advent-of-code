@@ -7,6 +7,7 @@ describe('intcode tests', () => {
         state = {
             memory: [],
             pointer: 0,
+            relativeBase: 0,
             done: undefined,
             awaitingInput: undefined,
             input: [],
@@ -121,6 +122,15 @@ describe('intcode tests', () => {
             });
         });
 
+        it('should handle code 9', () => {
+            state.memory = '109,19'.split(',').map(s => parseInt(s, 10));
+            state.relativeBase = 2000;
+            let nextState = takeStep(state);
+            expect(nextState.memory).toEqual([109,19]);
+            expect(nextState.pointer).toEqual(2);
+            expect(nextState.relativeBase).toEqual(2019);
+        });
+
         it('should handle code 99', () => {
             state.memory = '3500,9,10,70,2,3,11,0,99,30,40,50'.split(',').map(s => parseInt(s, 10));
             state.pointer = 8;
@@ -137,7 +147,7 @@ describe('intcode tests', () => {
         });
     });
 
-    describe('parameter modes', () => {
+    describe('immediate mode', () => {
         it('should handle immediate mode in p1 for multiplication', () => {
             state.memory = '102,4,3,4,33'.split(',').map(s => parseInt(s, 10));
             let nextState = takeStep(state);
@@ -148,6 +158,68 @@ describe('intcode tests', () => {
             state.memory = '1002,4,3,4,33'.split(',').map(s => parseInt(s, 10));
             let nextState = takeStep(state);
             expect(nextState.memory).toEqual([1002,4,3,4,99]);
+        });
+
+        it('should handle immediate mode for input', () => {
+            state.memory = '103,4'.split(',').map(s => parseInt(s, 10));
+            state.input = [1];
+            expect(() => {
+                let nextState = takeStep(state);
+            }).toThrowError('cannot write to self');
+        });
+
+        it('should handle unknown mode for input', () => {
+            state.memory = '403,4'.split(',').map(s => parseInt(s, 10));
+            state.input = [1];
+            expect(() => {
+                let nextState = takeStep(state);
+            }).toThrowError('invalid mode');
+        });
+    });
+
+    describe('relative mode', () => {
+        it('should act on relative mode for p1', () => {
+            state.memory = '204,-34'.split(',').map(s => parseInt(s, 10));
+            state.relativeBase = 34;
+            let nextState = takeStep(state);
+            expect(nextState.output).toEqual([204]);
+        });
+
+        it('should act on relative mode for p2', () => {
+            state.memory = '2002,4,1,4,33'.split(',').map(s => parseInt(s, 10));
+            state.relativeBase = 2;
+            let nextState = takeStep(state);
+            expect(nextState.memory).toEqual([2002,4,1,4,132]);
+        });
+
+        it('should handle relative mode for input', () => {
+            state.memory = '203,4'.split(',').map(s => parseInt(s, 10));
+            state.relativeBase = 2;
+            state.input = [23];
+            let nextState = takeStep(state);
+            expect(nextState.memory[6]).toEqual(23);
+        });
+
+        it('should handle relative mode for position output', () => {
+            state.memory = '21101,4,4,10'.split(',').map(s => parseInt(s, 10));
+            state.relativeBase = 20;
+            let nextState = takeStep(state);
+            expect(nextState.memory[30]).toEqual(8);
+        });
+
+        it('should handle unknown mode for input', () => {
+            state.memory = '40003,4'.split(',').map(s => parseInt(s, 10));
+            expect(() => {
+                let nextState = takeStep(state);
+            }).toThrowError('invalid mode');
+        });
+    });
+
+    describe('enhanced features', () => {
+        it('should assume uninitialized values are 0', () => {
+            state.memory = '1001,5,1,4'.split(',').map(s => parseInt(s, 10));
+            let nextState = takeStep(state);
+            expect(nextState.memory).toEqual([1001,5,1,4,1]);
         });
     });
 
@@ -296,6 +368,26 @@ describe('intcode tests', () => {
                 expect(endState.memory).toEqual([20,0,3,0,99]);
                 expect(endState.input).toEqual([]);
                 expect(endState.awaitingInput).toBe(true);
+            });
+        });
+
+        describe('complicated functions', () => {
+            it('should have a quine', () => {
+                state.memory = '109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99'.split(',').map(s => parseInt(s, 10));
+                let endState = runProgram(state);
+                expect(endState.output).toEqual([109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]);
+            });
+
+            it('should handle multiplying large numbers', () => {
+                state.memory = '1102,34915192,34915192,7,4,7,99,0'.split(',').map(s => parseInt(s, 10));
+                let endState = runProgram(state);
+                expect(endState.output).toEqual([1219070632396864]);
+            });
+
+            it('should handle large numbers', () => {
+                state.memory = '104,1125899906842624,99'.split(',').map(s => parseInt(s, 10));
+                let endState = runProgram(state);
+                expect(endState.output).toEqual([1125899906842624]);
             });
         });
     });
