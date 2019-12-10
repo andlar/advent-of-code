@@ -49,4 +49,10 @@ describe('Point tests', () => {
         expect(Point.direction(a, sw)).toEqual(new Point(-1, 1));
         expect(Point.direction(a, sse)).toEqual(new Point(1, 2));
     });
+
+    it('should add points', () => {
+        let a = new Point(2, 3);
+        let b = new Point(-1, 3);
+        expect(Point.add(a, b)).toEqual(new Point(1, 6));
+    });
 });

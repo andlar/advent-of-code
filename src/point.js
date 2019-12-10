@@ -42,6 +42,10 @@ export class Point {
         return new Point(x, y);
     }
 
+    static add(a, b) {
+        return new Point(a.x + b.x, a.y + b.y);
+    }
+
     key() {
         return this.x + ':' + this.y;
     }
