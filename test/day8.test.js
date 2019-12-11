@@ -1,5 +1,5 @@
 import { parseLayer, findFewest, flattenLayers } from '../src/day8';
-import { input, layerData } from './day8.data';
+import { input, layerData } from './data/day8.data';
 
 describe('day 8 tests', () => {
     describe('part 1', () => {

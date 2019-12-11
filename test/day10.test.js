@@ -1,5 +1,5 @@
 import { parseChart, findVectors, generateVectorMap, findBestLocation, vaporize, laserSweep, sortLasers, findNextToVaporize, findNthToVaporize } from '../src/day10';
-import { input, samples, vaporField } from './day10.data';
+import { input, samples, vaporField } from './data/day10.data';
 
 describe('day 10 tests', () => {
     describe('part 1', () => {

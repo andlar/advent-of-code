@@ -1,4 +1,4 @@
-import { input } from './day6.data';
+import { input } from './data/day6.data';
 import { buildMap, calcOrbit, checkSum, pathToCenter, findTransfers } from '../src/day6';
 
 let testMap = `COM)B

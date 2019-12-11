@@ -1,5 +1,5 @@
 import { getThrusterSignal, findAllSignals, getFeedbackSignal, findFeedbackSignals } from '../src/day7';
-import { input } from './day7.data';
+import { input } from './data/day7.data';
 
 describe('day 7 tests', () => {
     describe('part 1', () => {

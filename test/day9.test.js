@@ -1,5 +1,5 @@
 import { runProgram } from '../src/intcode';
-import { input } from './day9.data';
+import { input } from './data/day9.data';
 
 describe('day 9 tests', () => {
     describe('part 1', () => {
