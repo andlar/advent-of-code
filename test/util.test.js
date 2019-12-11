@@ -1,4 +1,4 @@
-import { gcd } from '../src/util';
+import { gcd, drawGrid } from '../src/util';
 
 describe('utility tests', () => {
     describe('gcd', () => {
@@ -10,6 +10,22 @@ describe('utility tests', () => {
             expect(gcd(15,-12)).toBe(3)
             expect(gcd(13,17)).toBe(1);
             expect(gcd(3,-3)).toBe(3);
+        });
+    });
+
+    describe('drawing grids', () => {
+        it('should draw a grid', () => {
+            let grid = {
+                '-1:-1': '#',
+                '1:1': '#',
+            }
+            let output = drawGrid(grid);
+            expect(drawGrid(grid)).toBe('#####\n#  ##\n#   #\n##  #\n#####');
+            grid = {
+                '-1:1': '#',
+                '1:-1': '#',
+            }
+            expect(drawGrid(grid)).toBe('#####\n##  #\n#   #\n#  ##\n#####');
         });
     });
 });
