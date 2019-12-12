@@ -7,6 +7,10 @@ const gcd = (a, b) => {
     return gcd(a, b % a);
 }
 
+const lcm = (a, b) => {
+    return (a / gcd(a, b)) * b;
+}
+
 const drawGrid = grid => {
     let minX = 0, minY = 0, maxX = 0, maxY = 0;
     Object.keys(grid).forEach(key => {
@@ -30,4 +34,4 @@ const drawGrid = grid => {
     return output;
 }
 
-export { gcd, drawGrid };
+export { gcd, lcm, drawGrid };

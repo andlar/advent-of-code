@@ -1,7 +1,7 @@
-import { gcd, drawGrid } from '../src/util';
+import { gcd, lcm, drawGrid } from '../src/util';
 
 describe('utility tests', () => {
-    describe('gcd', () => {
+    describe('math', () => {
         it('should find the greatest common denominator', () => {
             expect(gcd(3,0)).toBe(3);
             expect(gcd(0,-2)).toBe(2);
@@ -10,6 +10,10 @@ describe('utility tests', () => {
             expect(gcd(15,-12)).toBe(3)
             expect(gcd(13,17)).toBe(1);
             expect(gcd(3,-3)).toBe(3);
+        });
+
+        it('should find the least common multiple', () => {
+            expect(lcm(21,6)).toBe(42);
         });
     });
 
