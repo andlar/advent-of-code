@@ -31,5 +31,21 @@ describe('utility tests', () => {
             }
             expect(drawGrid(grid)).toBe('#####\n##  #\n#   #\n#  ##\n#####');
         });
+
+        it('should be able to flip it vertically', () => {
+            let grid = {
+                '-1:-1': '#',
+                '1:1': '#',
+            }
+            let options = {
+                verticalFlip: true,
+            }
+            expect(drawGrid(grid, options)).toBe('#####\n##  #\n#   #\n#  ##\n#####');
+            grid = {
+                '-1:1': '#',
+                '1:-1': '#',
+            }
+            expect(drawGrid(grid, options)).toBe('#####\n#  ##\n#   #\n##  #\n#####');
+        });
     });
 });

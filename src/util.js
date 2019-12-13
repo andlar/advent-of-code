@@ -11,7 +11,7 @@ const lcm = (a, b) => {
     return (a / gcd(a, b)) * b;
 }
 
-const drawGrid = grid => {
+const drawGrid = (grid, options) => {
     let minX = 0, minY = 0, maxX = 0, maxY = 0;
     Object.keys(grid).forEach(key => {
         let p = Point.fromKey(key);
@@ -21,15 +21,28 @@ const drawGrid = grid => {
         if (p.y > maxY) { maxY = p.y; }
     });
     let output = '';
-    for (var y = maxY + 1; y >= (minY - 1); y--) {
-        for (var x = minX - 1; x <= (maxX + 1); x++) {
-            if (y === maxY + 1 || y === minY - 1 || x === maxX + 1 || x === minX - 1) {
-                output += '#';
-            } else {
-                output += grid[x + ':' + y] || ' ';
-            }
+    if (options && options.verticalFlip) {
+        for (var y = minY - 1; y <= (maxY + 1); y++) {
+            output += drawRow(grid, minX, maxX, minY, maxY, y);
+            if (y !== maxY + 1) { output += '\n';}
         }
-        if (y !== minY - 1) { output += '\n';}
+    } else {
+        for (var y = maxY + 1; y >= (minY - 1); y--) {
+            output += drawRow(grid, minX, maxX, minY, maxY, y);
+            if (y !== minY - 1) { output += '\n';}
+        }
+    }
+    return output;
+}
+
+const drawRow = (grid, minX, maxX, minY, maxY, y) => {
+    let output = '';
+    for (var x = minX - 1; x <= (maxX + 1); x++) {
+        if (y === maxY + 1 || y === minY - 1 || x === maxX + 1 || x === minX - 1) {
+            output += '#';
+        } else {
+            output += grid[x + ':' + y] || ' ';
+        }
     }
     return output;
 }
