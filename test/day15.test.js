@@ -1,5 +1,5 @@
 import { runProgram } from '../src/intcode';
-import { initGrid, walk, parseMovement, explore } from '../src/day15';
+import { initGrid, walk, parseMovement, explore, drawMaze } from '../src/day15';
 import { drawGrid } from '../src/util';
 
 describe('day 15', () => {
@@ -121,7 +121,9 @@ describe('day 15', () => {
         });
     });
 
-    describe('part 2', () => {
-
+    fdescribe('part 2', () => {
+        it('should draw the maze', () => {
+            console.log(drawMaze());
+        });
     });
 });

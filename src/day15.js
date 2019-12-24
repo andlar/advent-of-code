@@ -1,7 +1,7 @@
 import { runProgram, continueProgram } from './intcode';
 import { drawGrid } from './util';
 import { Point } from './point';
-import { program } from './data/day15.data';
+import { program, paths } from './data/day15.data';
 
 const initGrid = () => {
     let grid = {
@@ -85,4 +85,8 @@ const explore = stepCount => {
     return { grid: grid, solution: solution};
 }
 
-export { initGrid, walk, parseMovement, explore };
+const drawMaze = () => {
+    return drawGrid(paths);
+}
+
+export { initGrid, walk, parseMovement, explore, drawMaze };
