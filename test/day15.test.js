@@ -104,8 +104,19 @@ describe('day 15', () => {
                 let grid = explore(420);
                 expect(Object.keys(grid.grid).length).toBe(932);
                 let solution = parseMovement(grid.solution.activePath, grid.solution.steps);
-                console.log(drawGrid(grid.grid));
-                console.log(drawGrid(solution.grid));
+                //console.log(drawGrid(grid.grid));
+                //console.log(drawGrid(solution.grid));
+            });
+
+            xit('should map the whole grid', () => {
+                let grid = explore();
+                expect(Object.keys(grid.grid).length).toBe(1658);
+                //console.log(drawGrid(grid.grid));
+                let newGrid = {};
+                let paths = Object.keys(grid.grid).filter(k => grid.grid[k] !== '#').forEach(k => newGrid[k] = grid.grid[k]);
+                //console.log(drawGrid(newGrid));
+                //console.log(paths);
+                //console.log(newGrid);
             });
         });
     });

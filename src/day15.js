@@ -73,7 +73,7 @@ const explore = stepCount => {
                 solution.steps = [...steps];
             }
             output = parseMovement(activePath, steps);
-            if (step < stepCount) {
+            if (step < stepCount || stepCount === undefined) {
                 if (endedOnOpenSpace && !grid[output.lastLocation]) {
                     pathsToExplore.push([...directions, i]);
                 }
