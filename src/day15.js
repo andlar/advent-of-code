@@ -61,6 +61,7 @@ const explore = stepCount => {
     let activePath, steps, output;
     let pathsToExplore = [[]];
     let step = 0;
+    let solution = {};
     while (pathsToExplore && pathsToExplore.length > 0) {
         directions = pathsToExplore.shift();
         for (let i = 1; i <= 4; i++) {
@@ -68,7 +69,8 @@ const explore = stepCount => {
             steps = walk(activePath);
             let endedOnOpenSpace = steps[steps.length - 1] === '.';
             if (steps[steps.length - 1] === '?') {
-                console.log('found it', steps.length);
+                solution.activePath = [...directions, i];
+                solution.steps = [...steps];
             }
             output = parseMovement(activePath, steps);
             if (step < stepCount) {
@@ -80,7 +82,7 @@ const explore = stepCount => {
         }
         step += 1;
     }
-    return grid;
+    return { grid: grid, solution: solution};
 }
 
 export { initGrid, walk, parseMovement, explore };

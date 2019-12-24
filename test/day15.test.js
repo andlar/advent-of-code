@@ -74,7 +74,7 @@ describe('day 15', () => {
         describe('when exploring', () => {
             it('should explore one step', () => {
                 let grid = explore(0);
-                expect(grid).toEqual({
+                expect(grid.grid).toEqual({
                     '0:0': 'o',
                     '-1:0': '#',
                     '1:0': '.',
@@ -85,7 +85,7 @@ describe('day 15', () => {
 
             it('should explore three steps', () => {
                 let grid = explore(2);
-                expect(grid).toEqual({
+                expect(grid.grid).toEqual({
                     '-1:0': '#',
                     '0:-1': '#',
                     '0:0': 'o',
@@ -102,8 +102,10 @@ describe('day 15', () => {
 
             it('should explore more steps', () => {
                 let grid = explore(420);
-                console.log(drawGrid(grid));
-                expect(Object.keys(grid).length).toBe(932);
+                expect(Object.keys(grid.grid).length).toBe(932);
+                let solution = parseMovement(grid.solution.activePath, grid.solution.steps);
+                console.log(drawGrid(grid.grid));
+                console.log(drawGrid(solution.grid));
             });
         });
     });
