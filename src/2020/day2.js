@@ -6,16 +6,16 @@ const parseLine = line => ({
 });
 
 const validA = line => {
-    const l = parseLine(line);
-    const count = l.pw.split('').filter(c => c === l.ch).length;
-    return l.min <= count && count <= l.max;
+    const count = line.pw.split('').filter(c => c === line.ch).length;
+    return line.min <= count && count <= line.max;
 };
 
 const validB = line => {
-    const l = parseLine(line);
-    return l.pw.charAt(l.min - 1) !== l.pw.charAt(l.max - 1) && (l.pw.charAt(l.min - 1) === l.ch || l.pw.charAt(l.max - 1) === l.ch);
+    return line.pw.charAt(line.min - 1) !== line.pw.charAt(line.max - 1) && (line.pw.charAt(line.min - 1) === line.ch || line.pw.charAt(line.max - 1) === line.ch);
 }
 
-const solve = (lines, test) => lines.filter(l => test(l)).length;
+const solve = (lines, test) => lines
+      .map(l => parseLine(l))
+      .filter(l => test(l)).length;
 
-export { validA, validB, solve };
+export { parseLine, validA, validB, solve };
