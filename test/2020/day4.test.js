@@ -1,27 +1,34 @@
-import { validPassport, validPassports, tokenize, isValidField, isValidPassport, countValidPassports } from '../../src/2020/day4';
+import { parseBatch, validPassport, validPassports, tokenize, isValidField, isValidPassport, countValidPassports } from '../../src/2020/day4';
 import { passports } from '../../src/2020/data/day4';
 import { mock } from './data/day4';
 
 describe('day 4a tests', () => {
+    it('should parse batch files', () => {
+        expect(parseBatch(mock)[0]).toBe('ecl:gry pid:860033327 eyr:2020 hcl:#fffffd byr:1937 iyr:2017 cid:147 hgt:183cm');
+        expect(parseBatch(mock)[1]).toBe('iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884 hcl:#cfa07d byr:1929');
+        expect(parseBatch(mock)[2]).toBe('hcl:#ae17e1 iyr:2013 eyr:2024 ecl:brn pid:760753108 byr:1931 hgt:179cm');
+        expect(parseBatch(mock)[3]).toBe('hcl:#cfa07d eyr:2025 pid:166559648 iyr:2011 ecl:brn hgt:59in');
+    });
+
     it('should know what valid passports are', () => {
-        expect(validPassport(mock[0])).toBe(true);
-        expect(validPassport(mock[1])).toBe(false);
-        expect(validPassport(mock[2])).toBe(true);
-        expect(validPassport(mock[3])).toBe(false);
+        expect(validPassport(parseBatch(mock)[0])).toBe(true);
+        expect(validPassport(parseBatch(mock)[1])).toBe(false);
+        expect(validPassport(parseBatch(mock)[2])).toBe(true);
+        expect(validPassport(parseBatch(mock)[3])).toBe(false);
     });
 
     it('should count the total valid passports', () => {
-        expect(validPassports(mock)).toBe(2);
+        expect(validPassports(parseBatch(mock))).toBe(2);
     });
 
     it('should count the total valid real passports', () => {
-        expect(validPassports(passports)).toBe(219);
+        expect(validPassports(parseBatch(passports))).toBe(219);
     });
 });
 
 describe('day 4b tests', () => {
     it('should tokenize passports', () => {
-        expect(tokenize(mock[0])).toEqual(['ecl:gry', 'pid:860033327', 'eyr:2020', 'hcl:#fffffd', 'byr:1937', 'iyr:2017', 'cid:147', 'hgt:183cm']);
+        expect(tokenize(parseBatch(mock)[0])).toEqual(['ecl:gry', 'pid:860033327', 'eyr:2020', 'hcl:#fffffd', 'byr:1937', 'iyr:2017', 'cid:147', 'hgt:183cm']);
     });
 
     describe('passport qualities', () => {
@@ -86,10 +93,10 @@ describe('day 4b tests', () => {
     });
 
     it('should count the total valid passports', () => {
-        expect(countValidPassports(mock)).toBe(2);
+        expect(countValidPassports(parseBatch(mock))).toBe(2);
     });
 
     it('should count the total valid real passports', () => {
-        expect(countValidPassports(passports)).toBe(127); //110 is too low
+        expect(countValidPassports(parseBatch(passports))).toBe(127); //110 is too low
     });
 });
