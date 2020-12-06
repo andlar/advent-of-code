@@ -1,5 +1,20 @@
 import { Point } from './point';
 
+const parseInput = input => {
+    let outs = [];
+    let out = '';
+    input.forEach(line => {
+        if (line === '') {
+            outs.push(out.trim());
+            out = '';
+        } else {
+            out += ' ' + line;
+        }
+    });
+    outs.push(out.trim());
+    return outs;
+}
+
 const gcd = (a, b) => {
     if (a === 0) { return Math.abs(b); }
     if (b === 0) { return Math.abs(a); }
@@ -47,4 +62,4 @@ const drawRow = (grid, minX, maxX, minY, maxY, y) => {
     return output;
 }
 
-export { gcd, lcm, drawGrid };
+export { drawGrid, gcd, lcm, parseInput };

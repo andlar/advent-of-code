@@ -1,18 +1,3 @@
-const parseBatch = batch => {
-    let passports = [];
-    let passport = '';
-    batch.forEach(line => {
-        if (line === '') {
-            passports.push(passport.trim());
-            passport = '';
-        } else {
-            passport += ' ' + line;
-        }
-    });
-    passports.push(passport.trim());
-    return passports;
-}
-
 const tokenize = passport => passport.split(' ');
 
 const validPassport = passport => tokenize(passport).length === 8 || (tokenize(passport).length === 7 && passport.indexOf('cid:') === -1);
@@ -40,4 +25,4 @@ const isValidPassport = passport => tokenize(passport).reduce((acc, f) => acc &&
 
 const countValidPassports = passports => passports.filter(p => isValidPassport(p)).length;
 
-export { parseBatch, tokenize, validPassport, validPassports, isValidField, isValidPassport, countValidPassports };
+export { tokenize, validPassport, validPassports, isValidField, isValidPassport, countValidPassports };
