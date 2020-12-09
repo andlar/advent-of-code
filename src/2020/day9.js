@@ -1,21 +1,14 @@
-const makesASum = (vals, sum) => vals.reduce((acc, v, idx, arr) => {
-    let pos = arr.filter(a => a !== v);
-    let can = pos.find(t => t + v === sum) > -1;
-    return acc || can;
-}, false);
+const makesASum = (vals, sum) => vals
+      .reduce((acc, v, idx, arr) => acc || arr
+              .filter(a => a !== v)
+              .find(t => t + v === sum) > -1,
+              false);
 
-const isASum = (input, preamble, idx) => {
-    if (idx < preamble) { return true; }
-    return makesASum(input.slice(idx - preamble, idx), input[idx])
-}
+const isASum = (input, idx, preamble = 5) => (idx < preamble)
+      || makesASum(input.slice(idx - preamble, idx), input[idx]);
 
-const firstInvalid = (input, preamble = 5) => {
-    for (let i = 0; i < input.length; i++) {
-        if (!isASum(input, preamble, i)) {
-            return input[i];
-        }
-    }
-}
+
+const firstInvalid = (input, preamble = 5) => input.find((val, idx, arr) => !isASum(arr, idx, preamble));
 
 const findSums = (input, target) => {
     let ret = {};
@@ -27,10 +20,9 @@ const findSums = (input, target) => {
             offset += 1;
         };
         if (sum === target) {
-            ret = {
-                min: Math.min(...input.slice(idx, idx + offset)),
-                max: Math.max(...input.slice(idx, idx + offset)),
-            };
+            let min = Math.min(...input.slice(idx, idx + offset));
+            let max = Math.max(...input.slice(idx, idx + offset));
+            ret = {min, max, total: min + max};
             return true;
         }
     });

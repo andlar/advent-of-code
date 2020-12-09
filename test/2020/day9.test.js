@@ -9,9 +9,9 @@ describe('utility functions', () => {
     });
 
     it('checks a value', () => {
-        expect(isASum(mock, 5, 1)).toBe(true);
-        expect(isASum(mock, 5, 5)).toBe(true);
-        expect(isASum(mock, 5, 14)).toBe(false);
+        expect(isASum(mock, 1)).toBe(true);
+        expect(isASum(mock, 5)).toBe(true);
+        expect(isASum(mock, 14)).toBe(false);
     });
 
     it('finds the first invalid line', () => {
@@ -20,8 +20,7 @@ describe('utility functions', () => {
 
     it('finds a contiguous sum', () => {
         let out = findSums(mock, 127);
-        expect(out).toEqual({min: 15, max: 47});
-        expect(out.min + out.max).toBe(62);
+        expect(out).toEqual({min: 15, max: 47, total: 62});
     });
 });
 
@@ -32,6 +31,6 @@ describe('solutions', () => {
 
     it('finds the second solution', () => {
         let out = findSums(input, 133015568);
-        expect(out.min + out.max).toBe(16107959);
+        expect(out.total).toBe(16107959);
     });
 });
