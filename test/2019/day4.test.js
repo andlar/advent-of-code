@@ -1,6 +1,5 @@
 import { hasAdjacent, containsPair, increases, findPossibles, findPossiblesWithPairs } from '../src/day4';
 
-
 describe('day 4 tests', () => {
     let input;
     beforeEach(() => {

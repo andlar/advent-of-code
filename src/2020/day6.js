@@ -1,4 +1,4 @@
-import { parseInput } from '../util';
+import { parseInput } from './util';
 
 const filterOrs = group => new Set([...group.replace(/ /g, '')]).size;
 

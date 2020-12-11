@@ -1,5 +1,5 @@
 import { filterOrs, filterAnds, getAll } from '../../src/2020/day6';
-import { parseInput } from '../../src/util';
+import { parseInput } from '../../src/2020/util';
 import { customs } from '../../src/2020/data/day6';
 import { mock } from './data/day6';
 

@@ -1,6 +1,6 @@
 import { validPassport, validPassports, tokenize, isValidField, isValidPassport, countValidPassports } from '../../src/2020/day4';
 import { passports } from '../../src/2020/data/day4';
-import { parseInput } from '../../src/util';
+import { parseInput } from '../../src/2020/util';
 import { mock } from './data/day4';
 
 describe('day 4a tests', () => {
