@@ -94,6 +94,6 @@ const input = `8
 95
 3
 52
-49`.split('\n').map(v => parseInt(v, 10));
+49`.split('\n').map(v => parseInt(v, 10)).sort((a, b) => a - b);
 
 export { input };

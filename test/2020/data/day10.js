@@ -40,6 +40,6 @@ const mock2 = `28
 2
 34
 10
-3`.split('\n').map(v => parseInt(v, 10));
+3`.split('\n').map(v => parseInt(v, 10)).sort((a, b) => a - b);
 
 export { mock, mock2 };
