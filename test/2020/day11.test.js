@@ -1,4 +1,4 @@
-import { buildGrid, getNeighbors, iterate, settle, countPassengers } from '../../src/2020/day11';
+import { buildGrid, getNeighbors, firstSeat, seenNeighbors, iterate, settle, countPassengers } from '../../src/2020/day11';
 import { input } from '../../src/2020/data/day11';
 import { mock } from './data/day11';
 
@@ -74,11 +74,65 @@ describe('utility functions', () => {
         let final = settle(mock);
         expect(countPassengers(final.grid)).toBe(37);
     });
+
+    it('should see what the first seat is', () => {
+        let grid = [
+            '.............',
+            '.L.L.#.#.#.#.',
+            '.............',
+        ];
+        expect(firstSeat(grid, 1, 1, 1, 0)).toEqual('L');
+        expect(firstSeat(grid, 3, 1, 1, 0)).toEqual('#');
+        expect(firstSeat(grid, 1, 1, 1, 1)).toBeUndefined();
+    });
+
+    it('should count seen neighbors in 8 directions', () => {
+        let grid = [
+            '.......#.',
+            '...#.....',
+            '.#.......',
+            '.........',
+            '..#L....#',
+            '....#....',
+            '.........',
+            '#........',
+            '...#.....',
+        ];
+        expect(seenNeighbors(grid, 3, 4)).toEqual(8); // x, then y
+    });
+
+    it('should not see through neighbors', () => {
+        let grid = [
+            '.............',
+            '.L.L.#.#.#.#.',
+            '.............',
+        ];
+        expect(seenNeighbors(grid, 1, 1)).toEqual(0); // x, then y
+        expect(seenNeighbors(grid, 3, 1)).toEqual(1); // x, then y
+    });
+
+    it('should only see orthogonally', () => {
+        let grid = [
+            '.##.##.',
+            '#.#.#.#',
+            '##...##',
+            '...L...',
+            '##...##',
+            '#.#.#.#',
+            '.##.##.',
+        ];
+        expect(seenNeighbors(grid, 3, 3)).toEqual(0); // x, then y
+    });
 });
 
 describe('solutions', () => {
     it('should know how many real passengers there are', () => {
         let final = settle(input);
         expect(countPassengers(final.grid)).toBe(2299);
+    });
+
+    it('should know how many real passengers there are with different rules', () => {
+        let final = settle(input, seenNeighbors, 5);
+        expect(countPassengers(final.grid)).toBe(2047);
     });
 });

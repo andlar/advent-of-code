@@ -11,16 +11,41 @@ const getNeighbors = (grid, x, y) => {
     ].filter(v => v === '#').length;
 }
 
-const iterate = grid => {
+const firstSeat = (grid, initX, initY, dx, dy) => {
+    let seat, x, y;
+    x = initX + dx;
+    y = initY + dy;
+    do {
+        seat = grid[y] && grid[y][x];
+        x += dx;
+        y += dy;
+    } while (seat === '.');
+    return seat;
+}
+
+const seenNeighbors = (grid, x, y) => {
+    return [
+        firstSeat(grid, x, y, -1, -1),
+        firstSeat(grid, x, y, -1, 0),
+        firstSeat(grid, x, y, -1, 1),
+        firstSeat(grid, x, y, 0, -1),
+        firstSeat(grid, x, y, 0, 1),
+        firstSeat(grid, x, y, 1, -1),
+        firstSeat(grid, x, y, 1, 0),
+        firstSeat(grid, x, y, 1, 1),
+    ].filter(v => v === '#').length;
+}
+
+const iterate = (grid, validator = getNeighbors, max = 4) => {
     let next = [];
     let changed = false;
     grid.forEach((row, y) => {
         let out = '';
         row.split('').forEach((col, x) => {
-            let neighbors = getNeighbors(grid, x, y);
+            let neighbors = validator(grid, x, y);
             switch (col) {
             case '#':
-                if (neighbors >= 4) {
+                if (neighbors >= max) {
                     out += 'L';
                     changed = true;
                 } else {
@@ -44,14 +69,15 @@ const iterate = grid => {
     return {grid: next, changed: changed};
 }
 
-const settle = grid => {
+const settle = (grid, validator = getNeighbors, max = 4) => {
     let ret = iterate(grid);
-    while (ret.changed) {
-        ret = iterate(ret.grid);
+    do {
+        ret = iterate(ret.grid, validator, max);
     }
+    while (ret.changed);
     return ret;
 }
 
 const countPassengers = grid => grid.reduce((sum, row) => sum + row.split('').filter(col => col === '#').length, 0);
 
-export { getNeighbors, iterate, settle, countPassengers };
+export { getNeighbors, seenNeighbors, firstSeat, iterate, settle, countPassengers };
