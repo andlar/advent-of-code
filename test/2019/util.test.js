@@ -34,12 +34,12 @@ describe('utility tests', () => {
                 '1:1': '#',
             }
             let output = drawGrid(grid);
-            expect(drawGrid(grid)).toBe('#####\n#  ##\n#   #\n##  #\n#####');
+            expect(drawGrid(grid)).toBe('     \n #.. \n ... \n ..# \n     ');
             grid = {
                 '-1:1': '#',
                 '1:-1': '#',
             }
-            expect(drawGrid(grid)).toBe('#####\n##  #\n#   #\n#  ##\n#####');
+            expect(drawGrid(grid)).toBe('     \n ..# \n ... \n #.. \n     ');
         });
 
         it('should be able to flip it vertically', () => {
@@ -50,12 +50,12 @@ describe('utility tests', () => {
             let options = {
                 verticalFlip: true,
             }
-            expect(drawGrid(grid, options)).toBe('#####\n##  #\n#   #\n#  ##\n#####');
+            expect(drawGrid(grid, options)).toBe('     \n ..# \n ... \n #.. \n     ');
             grid = {
                 '-1:1': '#',
                 '1:-1': '#',
             }
-            expect(drawGrid(grid, options)).toBe('#####\n#  ##\n#   #\n##  #\n#####');
+            expect(drawGrid(grid, options)).toBe('     \n #.. \n ... \n ..# \n     ');
         });
     });
 });

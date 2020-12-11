@@ -37,14 +37,14 @@ const drawGrid = (grid, options) => {
     });
     let output = '';
     if (options && options.verticalFlip) {
-        for (var y = minY - 1; y <= (maxY + 1); y++) {
-            output += drawRow(grid, minX, maxX, minY, maxY, y);
-            if (y !== maxY + 1) { output += '\n';}
-        }
-    } else {
         for (var y = maxY + 1; y >= (minY - 1); y--) {
             output += drawRow(grid, minX, maxX, minY, maxY, y);
             if (y !== minY - 1) { output += '\n';}
+        }
+    } else {
+        for (var y = minY - 1; y <= (maxY + 1); y++) {
+            output += drawRow(grid, minX, maxX, minY, maxY, y);
+            if (y !== maxY + 1) { output += '\n';}
         }
     }
     return output;
@@ -54,9 +54,9 @@ const drawRow = (grid, minX, maxX, minY, maxY, y) => {
     let output = '';
     for (var x = minX - 1; x <= (maxX + 1); x++) {
         if (y === maxY + 1 || y === minY - 1 || x === maxX + 1 || x === minX - 1) {
-            output += '#';
+            output += ' ';
         } else {
-            output += grid[x + ':' + y] || ' ';
+            output += grid[x + ':' + y] || '.';
         }
     }
     return output;
