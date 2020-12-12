@@ -1,4 +1,4 @@
-import { move, travel, navigate, followWaypoints, getDistance } from '../../src/2020/day12';
+import { move, travel, navigate, getDistance } from '../../src/2020/day12';
 import { input } from '../../src/2020/data/day12';
 import { mock } from './data/day12';
 
@@ -163,11 +163,16 @@ describe('utility functions', () => {
                 let pos = navigate(state, 'L270')
                 expect(pos).toEqual({x: 0, y: 0, wpx: 1, wpy: -10});
             });
+
+            it('should not do anything with bad angles', () => {
+                let pos = navigate(state, 'L3')
+                expect(pos).toEqual({x: 0, y: 0, wpx: 10, wpy: 1});
+            });
         });
 
         it('should follow the waypoint', () => {
             let state = {x: 0, y: 0, wpx: 10, wpy: 1};
-            expect(followWaypoints(state, mock)).toEqual({x: 214, y: -72, wpx: 4, wpy: -10});
+            expect(travel(state, mock, navigate)).toEqual({x: 214, y: -72, wpx: 4, wpy: -10});
         });
     });
 });
@@ -180,6 +185,6 @@ describe('solutions', () => {
 
     it('should solve part 2', () => {
         let start = {x: 0, y: 0, wpx: 10, wpy: 1};
-        expect(getDistance(followWaypoints(start, input))).toBe(23960);
+        expect(getDistance(travel(start, input, navigate))).toBe(23960);
     });
 });

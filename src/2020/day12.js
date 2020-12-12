@@ -1,31 +1,16 @@
 const turn = (facing, direction, degrees) => {
-    let turns = degrees / 90;
+    let turns = degrees / 90 * (direction === 'R' ? 1 : -1);
     let directions = ['N', 'E', 'S', 'W'];
     let start = directions.indexOf(facing);
-    let ret;
-    if (direction === 'R') {
-        ret = directions[(start + turns + 4) % 4];
-    } else {
-        ret = directions[(start - turns + 4) % 4];
-    }
-    //console.log({facing, direction, degrees, turns, start, ret});
-    return ret;
+    return directions[(start + turns + 4) % 4];
 }
 
 const move = (state, movement) => {
     let next = {...state};
     let mvt = movement.charAt(0);
     let dis = parseInt(movement.substring(1), 10);
+    if (mvt === 'F') { mvt = state.dir; }
     switch (mvt) {
-    case 'F':
-        switch (state.dir) {
-        case 'E': next.x += dis; break;
-        case 'W': next.x -= dis; break;
-        case 'N': next.y += dis; break;
-        case 'S': next.y -= dis; break;
-            // no default
-        }
-        break;
     case 'E': next.x += dis; break;
     case 'W': next.x -= dis; break;
     case 'N': next.y += dis; break;
@@ -48,6 +33,7 @@ const rotateWaypoint = (x, y, direction, degrees) => {
     if ((turns === 3 && direction === 'R') || (turns === 1 && direction === 'L')) {
         return {wpx: y * -1, wpy: x};
     }
+    return {wpx: x, wpy: y};
 }
 
 const navigate = (state, step) => {
@@ -74,18 +60,12 @@ const navigate = (state, step) => {
     return next;
 };
 
-const travel = (start, steps) => {
+const travel = (start, steps, algo = move) => {
     let state = {...start};
-    steps.forEach(step => state = move(state, step))
-    return state;
-}
-
-const followWaypoints = (start, steps) => {
-    let state = {...start};
-    steps.forEach(step => state = navigate(state, step))
+    steps.forEach(step => state = algo(state, step))
     return state;
 }
 
 const getDistance = state => Math.abs(state.x) + Math.abs(state.y);
 
-export { move, travel, navigate, followWaypoints, getDistance };
+export { move, travel, navigate, getDistance };
