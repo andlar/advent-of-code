@@ -1,4 +1,4 @@
-import { startGame, getTurn } from '../../src/2020/day15';
+import { startGame, getTurn, run } from '../../src/2020/day15';
 
 const input = [2,20,0,4,1,17];
 const mock = [
@@ -12,101 +12,52 @@ const mock = [
 ];
 
 describe('utility functions', () => {
-    it('should start the game', () => {
-        let game = startGame(mock[0]);
-        expect(game).toEqual({
-            turns: [
-                {val:0, turn:1, used:0},
-                {val:3, turn:2, used:0},
-                {val:6, turn:3, used:0},
-            ],
-            lastTurn: 3,
-        });
+    it('should do ten turns', () => {
+        let game = run(mock[0], 10);
+        expect(game).toEqual(0);
     });
 
-    describe('while in the first game', () => {
-        let game;
-        beforeEach(() => {
-            game = startGame(mock[0]);
-        });
-
-        it('should find a new number', () => {
-            let turn = getTurn(game, 4);
-            expect(turn).toEqual(0);
-        });
-
-        it('should find one already said', () => {
-            let turn = getTurn(game, 5);
-            expect(turn).toEqual(3);
-        });
-
-        it('should use the most recent', () => {
-            let turn = getTurn(game, 7);
-            expect(turn).toEqual(1);
-        });
-
-        it('should find more', () => {
-            let turn = getTurn(game, 6);
-            expect(turn).toEqual(3);
-        });
-
-        it('should find more', () => {
-            let turn = getTurn(game, 8);
-            expect(turn).toEqual(0);
-        });
-
-        it('should find more', () => {
-            let turn = getTurn(game, 9);
-            expect(turn).toEqual(4);
-        });
-
-        it('should find more', () => {
-            let turn = getTurn(game, 10);
-            expect(turn).toEqual(0);
-        });
-
-        it('should find the 2020th one', () => {
-            let turn = getTurn(game, 2020);
-            expect(turn).toEqual(436);
-        });
+    it('should do the full game', () => {
+        let game = run(mock[0], 2020);
+        expect(game).toEqual(436);
     });
 
     describe('in the other mock games', () => {
         it('should find more late ones', () => {
-            let turn = getTurn(startGame(mock[1]), 2020);
-            expect(turn).toEqual(1);
+            let game = run(mock[1], 2020);
+            expect(game).toEqual(1);
         });
 
         it('should find more late ones', () => {
-            let turn = getTurn(startGame(mock[2]), 2020);
-            expect(turn).toEqual(10);
+            let game = run(mock[2], 2020);
+            expect(game).toEqual(10);
         });
 
         it('should find more late ones', () => {
-            let turn = getTurn(startGame(mock[3]), 2020);
-            expect(turn).toEqual(27);
+            let game = run(mock[3], 2020);
+            expect(game).toEqual(27);
         });
 
         it('should find more late ones', () => {
-            let turn = getTurn(startGame(mock[4]), 2020);
-            expect(turn).toEqual(78);
+            let game = run(mock[4], 2020);
+            expect(game).toEqual(78);
         });
 
         it('should find more late ones', () => {
-            let turn = getTurn(startGame(mock[5]), 2020);
-            expect(turn).toEqual(438);
+            let game = run(mock[5], 2020);
+            expect(game).toEqual(438);
         });
 
         it('should find more late ones', () => {
-            let turn = getTurn(startGame(mock[6]), 2020);
-            expect(turn).toEqual(1836);
+            let game = run(mock[6], 2020);
+            expect(game).toEqual(1836);
         });
     });
 
     xdescribe('having a great memory', () => {
         it('should find a really late one', () => {
-            let turn = getTurn(startGame(mock[0]), 30000000);
-            expect(turn).toEqual(175594);
+            let game = run(mock[0], 300000000);
+            expect(game).toEqual(175594);
         });
 
         xit('should find a lot of really late ones', () => {
@@ -128,8 +79,8 @@ describe('utility functions', () => {
 
 describe('solutions', () => {
     it('should solve part 1', () => {
-        let turn = getTurn(startGame(input), 2020);
-        expect(turn).toEqual(758);
+        let game = run(input, 2020);
+        expect(game).toEqual(758);
     });
 
     xit('should solve part 2', () => {
