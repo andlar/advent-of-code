@@ -12,13 +12,15 @@ const interpretNotes = input => {
     return notes;
 }
 
-const findInvalid = notes => {
-    let data = interpretNotes(notes);
+const isInRange = (ranges, value) => ranges.filter(range => range[0] <= value && value <= range[1]).length > 0;
+
+const findInvalid = data => {
+    let notes = interpretNotes(data);
     let invalid = [];
-    data.nearby.forEach(values => values.forEach(value => {
+    notes.nearby.forEach(values => values.forEach(value => {
         let valid = false;
-        data.ranges.forEach((ranges) => {
-            if (ranges.filter(range => range[0] <= value && value <= range[1]).length > 0) {
+        notes.ranges.forEach((ranges) => {
+            if (isInRange(ranges, value)) {
                 valid = true;
             }
         });
@@ -27,4 +29,77 @@ const findInvalid = notes => {
     return invalid.reduce((acc, val) => acc += val, 0);
 }
 
-export { interpretNotes, findInvalid };
+const updateNearby = data => {
+    let notes = interpretNotes(data);
+    notes.nearby = notes.nearby.filter(values => {
+        let valid = values.reduce((acc, value) => {
+            let valid = false;
+            notes.ranges.forEach(ranges => {
+                valid = valid || isInRange(ranges, value);
+            });
+            return acc && valid;
+        }, true);
+        return valid;
+    });
+    return notes;
+}
+
+const initLocations = data => {
+    let notes = interpretNotes(data);
+    let locations = new Map();
+    let keys = '';
+    notes.your.forEach((v, idx) => {
+        locations.set(idx, Array.from(notes.ranges.keys()));
+    });
+    return locations;
+}
+
+const eliminateLocations = (locations, notes) => {
+    locations.forEach((value, key) => {
+        notes.nearby.forEach(ticket => {
+            let locs = locations.get(key).filter(loc => {
+                return isInRange(notes.ranges.get(loc), ticket[key]);
+            });
+            locations.set(key, locs);
+        });
+    });
+    return locations;
+};
+
+const cleanFixed = locations => {
+    let singleVals = []
+    locations.forEach(locs => {
+        if (locs.length === 1) {
+            singleVals.push(locs[0]);
+        }
+    });
+    locations.forEach((value, key) => {
+        if (value.length > 1) {
+            value = value.filter(l => singleVals.indexOf(l) === -1);
+            locations.set(key, value);
+        }
+    });
+    return locations;
+}
+
+const isSettled = locations => {
+    let settled = true;
+    locations.forEach(locs => {
+        if (locs.length > 1) {
+            settled = false;
+        }
+    });
+    return settled;
+}
+
+const settle = data => {
+    let locations = initLocations(data);
+    let notes = updateNearby(data);
+    locations = eliminateLocations(locations, notes);
+    while (!isSettled(locations)) {
+        locations = cleanFixed(locations);
+    }
+    return locations;
+}
+
+export { interpretNotes, findInvalid, updateNearby, initLocations, eliminateLocations, cleanFixed, settle };
