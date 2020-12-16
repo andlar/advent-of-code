@@ -61,9 +61,8 @@ describe('solutions', () => {
         expect(game).toEqual(758);
     });
 
-    xit('should solve part 2', () => {
+    it('should solve part 2', () => {
         let game = run(input, 30000000);
         expect(game).toEqual(814);
-        //note: this is the right answer, but the local framework can't run it...
     });
 });
