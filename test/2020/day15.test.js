@@ -53,28 +53,6 @@ describe('utility functions', () => {
             expect(game).toEqual(1836);
         });
     });
-
-    xdescribe('having a great memory', () => {
-        it('should find a really late one', () => {
-            let game = run(mock[0], 300000000);
-            expect(game).toEqual(175594);
-        });
-
-        xit('should find a lot of really late ones', () => {
-            let turn = getTurn(startGame(mock[1]), 30000000);
-            expect(turn).toEqual(2578);
-            turn = getTurn(startGame(mock[2]), 30000000);
-            expect(turn).toEqual(3544142);
-            turn = getTurn(startGame(mock[3]), 30000000);
-            expect(turn).toEqual(261214);
-            turn = getTurn(startGame(mock[4]), 30000000);
-            expect(turn).toEqual(6895259);
-            turn = getTurn(startGame(mock[5]), 30000000);
-            expect(turn).toEqual(18);
-            turn = getTurn(startGame(mock[6]), 30000000);
-            expect(turn).toEqual(362);
-        });
-    });
 });
 
 describe('solutions', () => {
@@ -84,7 +62,8 @@ describe('solutions', () => {
     });
 
     xit('should solve part 2', () => {
-        let turn = getTurn(startGame(input), 30000000);
-        expect(turn).toEqual(758);
+        let game = run(input, 30000000);
+        expect(game).toEqual(814);
+        //note: this is the right answer, but the local framework can't run it...
     });
 });
