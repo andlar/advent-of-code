@@ -1,4 +1,4 @@
-import { drawGrid, getNeighbors, iterate, grow, countCubes } from '../../src/2020/day17';
+import { getNeighbors, iterate, grow, growIn4d, countCubes, countCubesIn4d } from '../../src/2020/day17';
 import { input } from '../../src/2020/data/day17';
 
 let mock = [`.#.
@@ -56,6 +56,19 @@ describe('utility functions', () => {
                    ];
         expect(countCubes(grid)).toBe(11);
     });
+
+    it('should grow in 4d', () => {
+        let next = growIn4d([mock], 1);
+        let flat = grow(mock, 1);
+        console.log(next, flat);
+        expect(countCubesIn4d(next)).toEqual(29);
+        expect(countCubes(next)).toEqual(29);
+    });
+
+    xit('should grow in 4d six times', () => {
+        let next = growIn4d(mock, 6);
+        expect(countCubesIn4d(next)).toEqual(848);
+    });
 });
 
 describe('solutions', () => {
@@ -64,8 +77,8 @@ describe('solutions', () => {
         expect(countCubes(next)).toEqual(333);
     });
 
-    xit('should know something else', () => {
-        let final = settle(input, seenNeighbors, 5);
-        expect(countPassengers(final.grid)).toBe(2047);
+    xit('should know how many cubes exist in 4d space after 6 turns', () => {
+        let next = growIn4d([input], 6);
+        expect(countCubesIn4d(next)).toEqual(333); //687 is too low
     });
 });
