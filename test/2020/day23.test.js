@@ -1,4 +1,4 @@
-import { step, play, getAnswer } from '../../src/2020/day23';
+import { step, play, getAnswer, buildCircle, getSecondAnswer } from '../../src/2020/day23';
 
 let mock = '389125467';
 let real = '459672813';
@@ -29,6 +29,29 @@ describe('utility functions', () => {
         let answer = getAnswer([8,3,7,4,1,9,2,6,5]);
         expect(answer).toBe('92658374');
     });
+
+    it('should build a bigger circle', () => {
+        cups = buildCircle(cups, 20);
+        expect(cups).toEqual([3,8,9,1,2,5,4,6,7,10,11,12,13,14,15,16,17,18,19,20])
+    });
+
+    it('should build a much bigger circle', () => {
+        cups = buildCircle(cups, 1000000);
+        expect(cups.length).toBe(1000000);
+        expect(cups[cups.length - 1]).toBe(1000000);
+    });
+
+    it('should get the second answer', () => {
+        let answer = getSecondAnswer([8,3,7,4,1,9,2,6,5]);
+        expect(answer).toBe(18);
+    });
+
+    xit('should play a much bigger game', () => {
+        cups = buildCircle(cups, 1000000);
+        let result = play(cups, 10000000);
+        let answer = getSecondAnswer(result);
+        expect(answer).toBe(149245887792);
+    });
 });
 
 describe('solutions', () => {
@@ -41,9 +64,9 @@ describe('solutions', () => {
         expect(answer).toBe('68245739');
     });
 
-    xit('should play the full game recursively', () => {
-        let result = recurse(input);
-        let score = getScore(result);
-        expect(score).toBe(31151); //31269 is too high, 8679 is too low
+    xit('should play the bigger game', () => {
+        cups = buildCircle(cups, 1000000);
+        let answer = getSecondAnswer(play(cups, 10000000, 1000000));
+        expect(answer).toBe(149245887792);
     });
 });
