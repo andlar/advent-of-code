@@ -35,4 +35,27 @@ const getAllergenFree = (allergens, ingredients) => {
     })
 }
 
-export { getAllergens, getIngredients, getAllergenFree };
+const getDangerous = allergons => {
+    for (let i = 0; i < 5; i++) {
+        allergons.forEach((ing, allergon) => {
+            if (ing.size === 1) {
+                allergons.forEach((ingToCheck, allToCheck) => {
+                    if (ingToCheck.size > 1) {
+                        ing.forEach(remove => ingToCheck.delete(remove));
+                    }
+                });
+            }
+        });
+    }
+    let dangerous = [];
+    allergons.forEach((ing, allergon) => {
+        let out = {
+            allergon: allergon,
+        };
+        ing.forEach(i => out.ing = i);
+        dangerous.push(out);
+    });
+    return dangerous.sort((a, b) => a.allergon < b.allergon ? -1 : 1).map(i => i.ing).join(',');
+}
+
+export { getAllergens, getIngredients, getAllergenFree, getDangerous };

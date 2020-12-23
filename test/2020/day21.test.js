@@ -1,4 +1,4 @@
-import { getAllergens, getIngredients, getAllergenFree } from '../../src/2020/day21';
+import { getAllergens, getIngredients, getAllergenFree, getDangerous } from '../../src/2020/day21';
 import { foods } from '../../src/2020/data/day21';
 
 let mock;
@@ -33,6 +33,12 @@ sqjhc mxmxvkd sbzzf (contains fish)`.split('\n');;
         let safe = getAllergenFree(allergens, ingredients);
         expect(safe).toEqual(['kfcds','nhms','trh','sbzzf','sbzzf']);
     });
+
+    it('should figure out which ingredients match which allergen', () => {
+        let allergens = getAllergens(mock);
+        let dangerous = getDangerous(allergens);
+        expect(dangerous).toBe('mxmxvkd,sqjhc,fvjkl');
+    });
 });
 
 describe('solutions', () => {
@@ -43,9 +49,9 @@ describe('solutions', () => {
         expect(safe.length).toBe(2162);
     });
 
-    xit('should play the full game recursively', () => {
-        let result = recurse(input);
-        let score = getScore(result);
-        expect(score).toBe(31151); //31269 is too high, 8679 is too low
+    it('should find the dangerous ingredients', () => {
+        let allergens = getAllergens(foods);
+        let dangerous = getDangerous(allergens);
+        expect(dangerous).toBe('lmzg,cxk,bsqh,bdvmx,cpbzbx,drbm,cfnt,kqprv');
     });
 });
