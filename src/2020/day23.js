@@ -1,7 +1,11 @@
-const makeMap = input => {
+const makeMap = (input, max = 9) => {
     let cups = new Map();
+    let found = 0;
     input.split('').map(c => parseInt(c, 10)).forEach((cup, idx, array) => {
-        if (idx === array.length - 1) {
+        if (cup > found) {
+            found = cup;
+        }
+        if (idx === Math.max(array.length - 1, max - 1)) {
             cups.set(cup, array[0]);
         } else {
             cups.set(cup, array[idx + 1]);
