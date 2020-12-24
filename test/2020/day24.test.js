@@ -1,4 +1,4 @@
-import { layTile, layTiles, grow } from '../../src/2020/day24';
+import { layTile, layTiles, getNeighbors, grow, drawTiles } from '../../src/2020/day24';
 import { directions } from '../../src/2020/data/day24';
 import { mock } from './data/day24';
 
@@ -34,11 +34,46 @@ describe('utility functions', () => {
         expect(tiles.size).toBe(10);
     });
 
+    it('should count neighbors', () => {
+        let tiles = new Set();
+        tiles = layTiles(tiles, mock);
+        let result = getNeighbors(tiles, '0:0');
+        expect(result).toBe(1);
+    });
+
     it('should grow by a day', () => {
         let tiles = new Set();
         tiles = layTiles(tiles, mock);
-        tiles = grow(tiles);
-        expect(tiles.size).toBe(12);
+        let next = grow(tiles);
+        expect(next.size).toBe(15);
+    });
+
+    it('should grow by two days', () => {
+        let tiles = new Set();
+        tiles = layTiles(tiles, mock);
+        let next = grow(tiles);
+        next = grow(next);
+        expect(next.size).toBe(12);
+    });
+
+    it('should grow by ten days', () => {
+        let tiles = new Set();
+        tiles = layTiles(tiles, mock);
+        let next = grow(tiles);
+        for (let i = 1; i < 10; i++) {
+            next = grow(next);
+        }
+        expect(next.size).toBe(37);
+    });
+
+    it('should grow by one hundred days', () => {
+        let tiles = new Set();
+        tiles = layTiles(tiles, mock);
+        let next = grow(tiles);
+        for (let i = 1; i < 100; i++) {
+            next = grow(next);
+        }
+        expect(next.size).toBe(2208);
     });
 });
 
@@ -49,9 +84,14 @@ describe('solutions', () => {
         expect(tiles.size).toBe(388);
     });
 
-    xit('should play the bigger game', () => {
-        let cups = makeMap(real, 1000000);
-        let answer = getSecondAnswer(play(cups, 10000000, 1000000));
-        expect(answer).toBe(149245887792);
+    it('should grow the real tiles by one hundred days', () => {
+        let tiles = new Set();
+        tiles = layTiles(tiles, directions);
+        let next = grow(tiles);
+        for (let i = 1; i < 100; i++) {
+            next = grow(next);
+        }
+        console.log(drawTiles(next));
+        expect(next.size).toBe(4002);
     });
 });
