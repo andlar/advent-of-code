@@ -91,7 +91,6 @@ describe('solutions', () => {
         for (let i = 1; i < 100; i++) {
             next = grow(next);
         }
-        console.log(drawTiles(next));
         expect(next.size).toBe(4002);
     });
 });

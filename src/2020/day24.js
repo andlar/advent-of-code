@@ -115,7 +115,7 @@ const drawTiles = tiles => {
         }
         out.push(line);
     }
-    return out;
+    return out.join('\n');
 }
 
 export { layTile, layTiles, getNeighbors, grow, drawTiles };
