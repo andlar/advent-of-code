@@ -1,4 +1,4 @@
-const flipTile = (tiles, direction) => {
+const layTile = (tiles, direction) => {
     let x = 0, y = 0;
     while (direction) {
         if (direction.charAt(0) === 'e') {
@@ -15,7 +15,7 @@ const flipTile = (tiles, direction) => {
                 x -= 1;
             }
             direction = direction.substring(2);
-        } else if (direction.charAt(0) === 's') {
+        } else {
             y -= 1;
             if (direction.charAt(1) === 'e') {
                 x += 1;
@@ -27,26 +27,20 @@ const flipTile = (tiles, direction) => {
     }
     let loc = x + ':' + y;
     if (tiles.has(loc)) {
-        tiles.set(loc, tiles.get(loc) === 'w' ? 'b' : 'w');
+        tiles.delete(loc);
     } else {
-        tiles.set(loc, 'b')
+        tiles.add(loc);
     }
     return tiles;
 }
 
-const flipTiles = (tiles, directions) => {
-    directions.forEach(direction => tiles = flipTile(tiles, direction));
+const layTiles = (tiles, directions) => {
+    directions.forEach(direction => tiles = layTile(tiles, direction));
     return tiles;
 }
 
-const countBlack = tiles => {
-    let count = 0;
-    tiles.forEach(value => {
-        if (value === 'b') {
-            count += 1;
-        }
-    });
-    return count;
+const grow = tiles => {
+    return tiles;
 }
 
-export { flipTile, flipTiles, countBlack };
+export { layTile, layTiles, grow };
