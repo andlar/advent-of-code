@@ -1,254 +1,67 @@
-const getNeighbors = (grid, x, y, z) => {
-    let below = z > 0 ? [
-        grid[z - 1][y - 1] && grid[z - 1][y - 1].charAt(x - 1),
-        grid[z - 1][y - 1] && grid[z - 1][y - 1].charAt(x),
-        grid[z - 1][y - 1] && grid[z - 1][y - 1].charAt(x + 1),
-        grid[z - 1][y] && grid[z - 1][y].charAt(x - 1),
-        grid[z - 1][y] && grid[z - 1][y].charAt(x),
-        grid[z - 1][y] && grid[z - 1][y].charAt(x + 1),
-        grid[z - 1][y + 1] && grid[z - 1][y + 1].charAt(x - 1),
-        grid[z - 1][y + 1] && grid[z - 1][y + 1].charAt(x),
-        grid[z - 1][y + 1] && grid[z - 1][y + 1].charAt(x + 1),
-    ].filter(v => v === '#').length : 0;
-    let level = [
-        grid[z][y - 1] && grid[z][y - 1].charAt(x - 1),
-        grid[z][y - 1] && grid[z][y - 1].charAt(x),
-        grid[z][y - 1] && grid[z][y - 1].charAt(x + 1),
-        grid[z][y] && grid[z][y].charAt(x - 1),
-        grid[z][y] && grid[z][y].charAt(x + 1),
-        grid[z][y + 1] && grid[z][y + 1].charAt(x - 1),
-        grid[z][y + 1] && grid[z][y + 1].charAt(x),
-        grid[z][y + 1] && grid[z][y + 1].charAt(x + 1),
-    ].filter(v => v === '#').length;
-    let above = z < (grid.length - 1) ? [
-        grid[z + 1][y - 1] && grid[z + 1][y - 1].charAt(x - 1),
-        grid[z + 1][y - 1] && grid[z + 1][y - 1].charAt(x),
-        grid[z + 1][y - 1] && grid[z + 1][y - 1].charAt(x + 1),
-        grid[z + 1][y] && grid[z + 1][y].charAt(x - 1),
-        grid[z + 1][y] && grid[z + 1][y].charAt(x),
-        grid[z + 1][y] && grid[z + 1][y].charAt(x + 1),
-        grid[z + 1][y + 1] && grid[z + 1][y + 1].charAt(x - 1),
-        grid[z + 1][y + 1] && grid[z + 1][y + 1].charAt(x),
-        grid[z + 1][y + 1] && grid[z + 1][y + 1].charAt(x + 1),
-    ].filter(v => v === '#').length : 0;
-    return below + level + above;
-}
-
-const get4dNeighbors = (grid, x, y, z, w) => {
-    let before = w > 0 ? () => {
-        let below = z > 0 ? [
-            grid[w - 1][z - 1][y - 1] && grid[w - 1][z - 1][y - 1].charAt(x - 1),
-            grid[w - 1][z - 1][y - 1] && grid[w - 1][z - 1][y - 1].charAt(x),
-            grid[w - 1][z - 1][y - 1] && grid[w - 1][z - 1][y - 1].charAt(x + 1),
-            grid[w - 1][z - 1][y] && grid[w - 1][z - 1][y].charAt(x - 1),
-            grid[w - 1][z - 1][y] && grid[w - 1][z - 1][y].charAt(x),
-            grid[w - 1][z - 1][y] && grid[w - 1][z - 1][y].charAt(x + 1),
-            grid[w - 1][z - 1][y + 1] && grid[w - 1][z - 1][y + 1].charAt(x - 1),
-            grid[w - 1][z - 1][y + 1] && grid[w - 1][z - 1][y + 1].charAt(x),
-            grid[w - 1][z - 1][y + 1] && grid[w - 1][z - 1][y + 1].charAt(x + 1),
-        ].filter(v => v === '#').length : 0;
-        let level = [
-            grid[w - 1][z][y - 1] && grid[w - 1][z][y - 1].charAt(x - 1),
-            grid[w - 1][z][y - 1] && grid[w - 1][z][y - 1].charAt(x),
-            grid[w - 1][z][y - 1] && grid[w - 1][z][y - 1].charAt(x + 1),
-            grid[w - 1][z][y] && grid[w - 1][z][y].charAt(x - 1),
-            grid[w - 1][z][y] && grid[w - 1][z][y].charAt(x + 1),
-            grid[w - 1][z][y + 1] && grid[w - 1][z][y + 1].charAt(x - 1),
-            grid[w - 1][z][y + 1] && grid[w - 1][z][y + 1].charAt(x),
-            grid[w - 1][z][y + 1] && grid[w - 1][z][y + 1].charAt(x + 1),
-        ].filter(v => v === '#').length;
-        let above = z < (grid[w - 1].length - 1) ? [
-            grid[w - 1][z + 1][y - 1] && grid[w - 1][z + 1][y - 1].charAt(x - 1),
-            grid[w - 1][z + 1][y - 1] && grid[w - 1][z + 1][y - 1].charAt(x),
-            grid[w - 1][z + 1][y - 1] && grid[w - 1][z + 1][y - 1].charAt(x + 1),
-            grid[w - 1][z + 1][y] && grid[w - 1][z + 1][y].charAt(x - 1),
-            grid[w - 1][z + 1][y] && grid[w - 1][z + 1][y].charAt(x),
-            grid[w - 1][z + 1][y] && grid[w - 1][z + 1][y].charAt(x + 1),
-            grid[w - 1][z + 1][y + 1] && grid[w - 1][z + 1][y + 1].charAt(x - 1),
-            grid[w - 1][z + 1][y + 1] && grid[w - 1][z + 1][y + 1].charAt(x),
-            grid[w - 1][z + 1][y + 1] && grid[w - 1][z + 1][y + 1].charAt(x + 1),
-        ].filter(v => v === '#').length : 0;
-        return below + level + above;
-    } : () => 0;
-    let now = () => {
-        let below = z > 0 ? [
-            grid[w][z - 1][y - 1] && grid[w][z - 1][y - 1].charAt(x - 1),
-            grid[w][z - 1][y - 1] && grid[w][z - 1][y - 1].charAt(x),
-            grid[w][z - 1][y - 1] && grid[w][z - 1][y - 1].charAt(x + 1),
-            grid[w][z - 1][y] && grid[w][z - 1][y].charAt(x - 1),
-            grid[w][z - 1][y] && grid[w][z - 1][y].charAt(x),
-            grid[w][z - 1][y] && grid[w][z - 1][y].charAt(x + 1),
-            grid[w][z - 1][y + 1] && grid[w][z - 1][y + 1].charAt(x - 1),
-            grid[w][z - 1][y + 1] && grid[w][z - 1][y + 1].charAt(x),
-            grid[w][z - 1][y + 1] && grid[w][z - 1][y + 1].charAt(x + 1),
-        ].filter(v => v === '#').length : 0;
-        let level = [
-            grid[w][z][y - 1] && grid[w][z][y - 1].charAt(x - 1),
-            grid[w][z][y - 1] && grid[w][z][y - 1].charAt(x),
-            grid[w][z][y - 1] && grid[w][z][y - 1].charAt(x + 1),
-            grid[w][z][y] && grid[w][z][y].charAt(x - 1),
-            grid[w][z][y] && grid[w][z][y].charAt(x + 1),
-            grid[w][z][y + 1] && grid[w][z][y + 1].charAt(x - 1),
-            grid[w][z][y + 1] && grid[w][z][y + 1].charAt(x),
-            grid[w][z][y + 1] && grid[w][z][y + 1].charAt(x + 1),
-        ].filter(v => v === '#').length;
-        let above = z < (grid[w].length - 1) ? [
-            grid[w][z + 1][y - 1] && grid[w][z + 1][y - 1].charAt(x - 1),
-            grid[w][z + 1][y - 1] && grid[w][z + 1][y - 1].charAt(x),
-            grid[w][z + 1][y - 1] && grid[w][z + 1][y - 1].charAt(x + 1),
-            grid[w][z + 1][y] && grid[w][z + 1][y].charAt(x - 1),
-            grid[w][z + 1][y] && grid[w][z + 1][y].charAt(x),
-            grid[w][z + 1][y] && grid[w][z + 1][y].charAt(x + 1),
-            grid[w][z + 1][y + 1] && grid[w][z + 1][y + 1].charAt(x - 1),
-            grid[w][z + 1][y + 1] && grid[w][z + 1][y + 1].charAt(x),
-            grid[w][z + 1][y + 1] && grid[w][z + 1][y + 1].charAt(x + 1),
-        ].filter(v => v === '#').length : 0;
-        return below + level + above;
-    };
-    let after = w < (grid.length - 1) ? () => {
-        let below = z > 0 ? [
-            grid[w + 1][z - 1][y - 1] && grid[w + 1][z - 1][y - 1].charAt(x - 1),
-            grid[w + 1][z - 1][y - 1] && grid[w + 1][z - 1][y - 1].charAt(x),
-            grid[w + 1][z - 1][y - 1] && grid[w + 1][z - 1][y - 1].charAt(x + 1),
-            grid[w + 1][z - 1][y] && grid[w + 1][z - 1][y].charAt(x - 1),
-            grid[w + 1][z - 1][y] && grid[w + 1][z - 1][y].charAt(x),
-            grid[w + 1][z - 1][y] && grid[w + 1][z - 1][y].charAt(x + 1),
-            grid[w + 1][z - 1][y + 1] && grid[w + 1][z - 1][y + 1].charAt(x - 1),
-            grid[w + 1][z - 1][y + 1] && grid[w + 1][z - 1][y + 1].charAt(x),
-            grid[w + 1][z - 1][y + 1] && grid[w + 1][z - 1][y + 1].charAt(x + 1),
-        ].filter(v => v === '#').length : 0;
-        let level = [
-            grid[w + 1][z][y - 1] && grid[w + 1][z][y - 1].charAt(x - 1),
-            grid[w + 1][z][y - 1] && grid[w + 1][z][y - 1].charAt(x),
-            grid[w + 1][z][y - 1] && grid[w + 1][z][y - 1].charAt(x + 1),
-            grid[w + 1][z][y] && grid[w + 1][z][y].charAt(x - 1),
-            grid[w + 1][z][y] && grid[w + 1][z][y].charAt(x + 1),
-            grid[w + 1][z][y + 1] && grid[w + 1][z][y + 1].charAt(x - 1),
-            grid[w + 1][z][y + 1] && grid[w + 1][z][y + 1].charAt(x),
-            grid[w + 1][z][y + 1] && grid[w + 1][z][y + 1].charAt(x + 1),
-        ].filter(v => v === '#').length;
-        let above = z < (grid[w + 1].length - 1) ? [
-            grid[w + 1][z + 1][y - 1] && grid[w + 1][z + 1][y - 1].charAt(x - 1),
-            grid[w + 1][z + 1][y - 1] && grid[w + 1][z + 1][y - 1].charAt(x),
-            grid[w + 1][z + 1][y - 1] && grid[w + 1][z + 1][y - 1].charAt(x + 1),
-            grid[w + 1][z + 1][y] && grid[w + 1][z + 1][y].charAt(x - 1),
-            grid[w + 1][z + 1][y] && grid[w + 1][z + 1][y].charAt(x),
-            grid[w + 1][z + 1][y] && grid[w + 1][z + 1][y].charAt(x + 1),
-            grid[w + 1][z + 1][y + 1] && grid[w + 1][z + 1][y + 1].charAt(x - 1),
-            grid[w + 1][z + 1][y + 1] && grid[w + 1][z + 1][y + 1].charAt(x),
-            grid[w + 1][z + 1][y + 1] && grid[w + 1][z + 1][y + 1].charAt(x + 1),
-        ].filter(v => v === '#').length : 0;
-        return below + level + above;
-    } : () => 0;
-    return before() + now() + after();
-}
-
-const iterate = (grid, validator = getNeighbors) => {
-    let next = [];
-    let size = grid[0].length + 2;
-    let line = new Array(size).fill('.').join('');
-    grid = grid.map(plane => {
-        plane = plane.map(row => '.' + row + '.');
-        plane.unshift(line);
-        plane.push(line);
-        return plane;
+const initSpace = input => {
+    let space = new Set();
+    input.forEach((row, y) => {
+        row.split('').forEach((col, x) => {
+            if (col === '#') {
+                space.add(x + ':' + y + ':0');
+            }
+        });
     });
-    let below = new Array(size).fill(new Array(size).fill('.').join(''));
-    let above = new Array(size).fill(new Array(size).fill('.').join(''));
-    grid.unshift(below);
-    grid.push(above);
-    grid.forEach((plane, z) => {
-        let nextPlane = [];
-        plane.forEach((row, y) => {
-            let out = '';
-            row.split('').forEach((col, x) => {
-                let neighbors = validator(grid, x, y, z);
-                switch (col) {
-                case '#':
-                    if (2 <= neighbors && neighbors <= 3) {
-                        out += '#';
-                    } else {
-                        out += '.';
-                    }
-                    break;
-                case '.':
-                    if (neighbors === 3) {
-                        out += '#';
-                    } else {
-                        out += '.';
-                    }
-                    break;
+    return space;
+}
+
+const getNeighbors = (space, loc) => {
+    let [x, y, z] = loc.split(':').map(v => parseInt(v, 10));
+    let count = 0;
+    [-1, 0, 1].forEach(dx => {
+        [-1, 0, 1].forEach(dy => {
+            [-1, 0, 1].forEach(dz => {
+                if (dx === 0 && dy === 0 && dz === 0) { return; }
+                if (space.has((x + dx) + ':' + (y + dy) + ':' + (z + dz))) {
+                    count++;
                 }
-            })
-            nextPlane.push(out);
-        });
-        next.push(nextPlane);
-    });
-    return {grid: next};
-}
-
-const iterateIn4d = (grid) => {
-    let next = [];
-    let size = grid[0][0].length + 2;
-    let line = new Array(size).fill('.').join('');
-    grid = grid.map(space => {
-        space = space.map(plane => {
-            plane = plane.map(row => '.' + row + '.');
-            plane.unshift(line);
-            plane.push(line);
-            return plane;
-        });
-        let below = new Array(size).fill(new Array(size).fill('.').join(''));
-        let above = new Array(size).fill(new Array(size).fill('.').join(''));
-        space.unshift(below);
-        space.push(above);
-        return space;
-    });
-    let before = grid[0].map(vals => vals.map(v => v.replace(/#/g, '.')));
-    let after = grid[0].map(vals => vals.map(v => v.replace(/#/g, '.')));
-    grid.unshift(before);
-    grid.push(after);
-    console.log(grid);
-    grid.forEach((space, w) => {
-        let nextSpace = [];
-        space.forEach((plane, z) => {
-            let nextPlane = [];
-            plane.forEach((row, y) => {
-                let out = '';
-                row.split('').forEach((col, x) => {
-                    let neighbors = get4dNeighbors(grid, x, y, z, w);
-                    switch (col) {
-                    case '#':
-                        if (2 <= neighbors && neighbors <= 3) {
-                            out += '#';
-                        } else {
-                            out += '.';
-                        }
-                        break;
-                    case '.':
-                        if (neighbors === 3) {
-                            out += '#';
-                        } else {
-                            out += '.';
-                        }
-                        break;
-                    }
-                })
-                nextPlane.push(out);
             });
-            nextSpace.push(nextPlane);
         });
-        next.push(nextSpace);
     });
-    console.log(next);
-    return {grid: next};
+    return count;
 }
 
-const grow = (grid, steps) => {
+const iterate = space => {
+    let next = new Set();
+    let neighbors = new Set();
+    space.forEach(value => {
+        let [x, y, z] = value.split(':').map(v => parseInt(v, 10));
+        [-1, 0, 1].forEach(dx => {
+            [-1, 0, 1].forEach(dy => {
+                [-1, 0, 1].forEach(dz => {
+                    let key = (x + dx) + ':' + (y + dy) + ':' + (z + dz);
+                    if (dx === 0 && dy === 0 && dz === 0) {
+                        let cnt = getNeighbors(space, key);
+                        if (2 === cnt || cnt === 3) {
+                            next.add(key);
+                        }
+                    }
+                    if (!space.has(key)) {
+                        neighbors.add(key)
+                    }
+                });
+            });
+        });
+    });
+    neighbors.forEach(check => {
+        let cnt = getNeighbors(space, check);
+        if (cnt === 3) {
+            next.add(check);
+        }
+    });
+    return next;
+}
+
+const grow = (space, steps) => {
     for (let i = 0; i < steps; i++) {
-        grid = iterate(grid).grid;
+        space = iterate(space);
     }
-    return grid;
+    return space;
 }
 
 const growIn4d = (grid, steps) => {
@@ -258,8 +71,4 @@ const growIn4d = (grid, steps) => {
     return grid;
 }
 
-const countCubes = grid => grid.reduce((sum, plane) => sum + plane.reduce((sum, row) => sum + row.split('').filter(col => col === '#').length, 0), 0);
-
-const countCubesIn4d = grid => grid.reduce((sum, space) => sum + space.reduce((sum, plane) => sum + plane.reduce((sum, row) => sum + row.split('').filter(col => col === '#').length, 0), 0), 0);
-
-export { getNeighbors, get4dNeighbors, iterate, grow, growIn4d, countCubes, countCubesIn4d };
+export { initSpace, getNeighbors, iterate, grow };
