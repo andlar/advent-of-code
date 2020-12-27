@@ -1,52 +1,26 @@
-const initSpace = input => {
+const initSpace = (input, part2) => {
     let space = new Set();
     input.forEach((row, y) => {
         row.split('').forEach((col, x) => {
             if (col === '#') {
-                space.add(x + ':' + y + ':0');
+                space.add(x + ':' + y + (part2 ? ':0:0' : ':0'));
             }
         });
     });
     return space;
 }
 
-const init4dSpace = input => {
-    let space = new Set();
-    input.forEach((row, y) => {
-        row.split('').forEach((col, x) => {
-            if (col === '#') {
-                space.add(x + ':' + y + ':0:0');
-            }
-        });
-    });
-    return space;
-}
-
-const getNeighbors = (space, loc) => {
-    let [x, y, z] = loc.split(':').map(v => parseInt(v, 10));
-    let count = 0;
-    [-1, 0, 1].forEach(dx => {
-        [-1, 0, 1].forEach(dy => {
-            [-1, 0, 1].forEach(dz => {
-                if (dx === 0 && dy === 0 && dz === 0) { return; }
-                if (space.has((x + dx) + ':' + (y + dy) + ':' + (z + dz))) {
-                    count++;
-                }
-            });
-        });
-    });
-    return count;
-}
-
-const get4dNeighbors = (space, loc) => {
+const getNeighbors = (space, loc, part2) => {
     let [x, y, z, w] = loc.split(':').map(v => parseInt(v, 10));
     let count = 0;
     [-1, 0, 1].forEach(dx => {
         [-1, 0, 1].forEach(dy => {
             [-1, 0, 1].forEach(dz => {
-                [-1, 0, 1].forEach(dw => {
+                let ws = part2 ? [-1, 0, 1] : [0];
+                ws.forEach(dw => {
+                    let key = part2 ? ((x + dx) + ':' + (y + dy) + ':' + (z + dz) + ':' + (w + dw)) : ((x + dx) + ':' + (y + dy) + ':' + (z + dz));
                     if (dx === 0 && dy === 0 && dz === 0 && dw === 0) { return; }
-                    if (space.has((x + dx) + ':' + (y + dy) + ':' + (z + dz) + ':' + (w + dw))) {
+                    if (space.has(key)) {
                         count++;
                     }
                 });
@@ -56,38 +30,7 @@ const get4dNeighbors = (space, loc) => {
     return count;
 }
 
-const iterate = space => {
-    let next = new Set();
-    let neighbors = new Set();
-    space.forEach(value => {
-        let [x, y, z] = value.split(':').map(v => parseInt(v, 10));
-        [-1, 0, 1].forEach(dx => {
-            [-1, 0, 1].forEach(dy => {
-                [-1, 0, 1].forEach(dz => {
-                    let key = (x + dx) + ':' + (y + dy) + ':' + (z + dz);
-                    if (dx === 0 && dy === 0 && dz === 0) {
-                        let cnt = getNeighbors(space, key);
-                        if (2 === cnt || cnt === 3) {
-                            next.add(key);
-                        }
-                    }
-                    if (!space.has(key)) {
-                        neighbors.add(key)
-                    }
-                });
-            });
-        });
-    });
-    neighbors.forEach(check => {
-        let cnt = getNeighbors(space, check);
-        if (cnt === 3) {
-            next.add(check);
-        }
-    });
-    return next;
-}
-
-const iterate4d = space => {
+const iterate = (space, part2) => {
     let next = new Set();
     let neighbors = new Set();
     space.forEach(value => {
@@ -95,10 +38,11 @@ const iterate4d = space => {
         [-1, 0, 1].forEach(dx => {
             [-1, 0, 1].forEach(dy => {
                 [-1, 0, 1].forEach(dz => {
-                    [-1, 0, 1].forEach(dw => {
-                        let key = (x + dx) + ':' + (y + dy) + ':' + (z + dz) + ':' + (w + dw);
+                    let ws = part2 ? [-1, 0, 1] : [0];
+                    ws.forEach(dw => {
+                        let key = part2 ? ((x + dx) + ':' + (y + dy) + ':' + (z + dz) + ':' + (w + dw)) : ((x + dx) + ':' + (y + dy) + ':' + (z + dz));
                         if (dx === 0 && dy === 0 && dz === 0 && dw === 0) {
-                            let cnt = get4dNeighbors(space, key);
+                            let cnt = getNeighbors(space, key, part2);
                             if (2 === cnt || cnt === 3) {
                                 next.add(key);
                             }
@@ -112,7 +56,7 @@ const iterate4d = space => {
         });
     });
     neighbors.forEach(check => {
-        let cnt = get4dNeighbors(space, check);
+        let cnt = getNeighbors(space, check, part2);
         if (cnt === 3) {
             next.add(check);
         }
@@ -120,18 +64,11 @@ const iterate4d = space => {
     return next;
 }
 
-const grow = (space, steps) => {
+const grow = (space, steps, part2) => {
     for (let i = 0; i < steps; i++) {
-        space = iterate(space);
+        space = iterate(space, part2);
     }
     return space;
 }
 
-const grow4d = (space, steps) => {
-    for (let i = 0; i < steps; i++) {
-        space = iterate4d(space);
-    }
-    return space;
-}
-
-export { initSpace, init4dSpace, getNeighbors, get4dNeighbors, iterate, iterate4d, grow, grow4d };
+export { initSpace, getNeighbors, iterate, grow };

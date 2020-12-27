@@ -1,4 +1,4 @@
-import { initSpace, init4dSpace, getNeighbors, get4dNeighbors, iterate, iterate4d, grow, grow4d } from '../../src/2020/day17';
+import { initSpace, getNeighbors, iterate, grow } from '../../src/2020/day17';
 import { input } from '../../src/2020/data/day17';
 
 let mock = `.#.
@@ -15,7 +15,8 @@ describe('utility functions', () => {
     });
 
     it('should init 4-D space', () => {
-        let space = init4dSpace(mock);
+        let part2 = true;
+        let space = initSpace(mock, part2);
         expect(space.has('0:0:0:0')).toBe(false);
         expect(space.has('1:0:0:0')).toBe(true);
         expect(space.has('2:1:0:0')).toBe(true);
@@ -48,26 +49,27 @@ describe('utility functions', () => {
     });
 
     describe('given 4-D space', () => {
-        let space;
+        let space, part2;
         beforeEach(() => {
-            space = init4dSpace(mock);
+            part2 = true
+            space = initSpace(mock, part2);
         });
 
         it('should get neighbors', () => {
-            expect(get4dNeighbors(space, '0:0:0:0')).toEqual(1); // x, y, z
-            expect(get4dNeighbors(space, '1:0:0:0')).toEqual(1);
-            expect(get4dNeighbors(space, '2:0:0:0')).toEqual(2);
-            expect(get4dNeighbors(space, '1:1:0:0')).toEqual(5);
-            expect(get4dNeighbors(space, '2:2:0:0')).toEqual(2);
+            expect(getNeighbors(space, '0:0:0:0', part2)).toEqual(1); // x, y, z
+            expect(getNeighbors(space, '1:0:0:0', part2)).toEqual(1);
+            expect(getNeighbors(space, '2:0:0:0', part2)).toEqual(2);
+            expect(getNeighbors(space, '1:1:0:0', part2)).toEqual(5);
+            expect(getNeighbors(space, '2:2:0:0', part2)).toEqual(2);
         });
 
         it('should iterate once', () => {
-            space = iterate4d(space);
+            space = iterate(space, part2);
             expect(space.size).toBe(29);
         });
 
         it('should grow', () => {
-            space = grow4d(space, 6);
+            space = grow(space, 6, part2);
             expect(space.size).toBe(848);
         });
     });
@@ -81,8 +83,9 @@ describe('solutions', () => {
     });
 
     it('should know how many cubes there are after 6 turns', () => {
-        let space = init4dSpace(input);
-        space = grow4d(space, 6);
+        let part2 = true;
+        let space = initSpace(input, part2);
+        space = grow(space, 6, part2);
         expect(space.size).toBe(2676);
     });
 });
