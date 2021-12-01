@@ -1,5 +1,5 @@
-import { countIncreases, convertToWindows, parseData } from '../../src/2021/01';
-import { mock, entries } from '../../resources/2021/01.data';
+import { countIncreases, convertToWindows, parseData } from '2021/01';
+import { mock, entries } from '2021/01.data';
 
 describe('day 1 tests', () => {
   it('should parse input as numbers', () => {

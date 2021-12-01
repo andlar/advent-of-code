@@ -7,6 +7,9 @@ module.exports = {
         app: './src/index.js',
     },
     mode: 'development',
+    resolve: {
+      modules: ['src', 'test', 'resources', 'node_modules'],
+    },
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
