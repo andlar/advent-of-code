@@ -20,7 +20,7 @@ describe('day 1 tests', () => {
 
 describe('day 1 part 2 tests', () => {
   it('should convert data to windows', () => {
-    expect(convertToWindows(mock)).toEqual([607, 618, 618, 617, 647, 716, 769, 792, 0, 0]);
+    expect(convertToWindows(mock)).toEqual([607, 618, 618, 617, 647, 716, 769, 792, NaN, NaN]);
   });
 
   it('should count increase in mock windows', () => {
