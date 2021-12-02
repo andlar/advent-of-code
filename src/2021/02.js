@@ -1,4 +1,4 @@
-const badMove = (pos, vector) => {
+const simpleMove = (vector, pos = { forward: 0, depth: 0 }) => {
   const newPos = {...pos};
   const items = vector.split(' ');
   switch (items[0]) {
@@ -15,15 +15,7 @@ const badMove = (pos, vector) => {
   return newPos;
 };
 
-const followSimpleCourse = (course) => {
-  return course
-    .split('\n')
-    .reduce((position, vector) => {
-      return badMove(position, vector);
-    }, { forward: 0, depth: 0});
-};
-
-const move = (pos, vector) => {
+const move = (vector, pos = { forward: 0, depth: 0, aim: 0 }) => {
   const newPos = {...pos};
   const items = vector.split(' ');
   switch (items[0]) {
@@ -41,12 +33,12 @@ const move = (pos, vector) => {
   return newPos;
 };
 
-const followCourse = (course) => {
-  return course
-    .split('\n')
-    .reduce((position, vector) => {
-      return move(position, vector);
-    }, { forward: 0, depth: 0, aim: 0});
-};
+const navigate = (movement, course) => course
+      .split('\n')
+      .reduce((position, vector) => movement(vector, position), { forward: 0, depth: 0, aim: 0 });
 
-export { badMove, followSimpleCourse, move, followCourse };
+const followSimpleCourse = (course) => navigate(simpleMove, course);
+
+const followCourse = (course) => navigate(move, course);
+
+export { simpleMove, followSimpleCourse, move, followCourse };
