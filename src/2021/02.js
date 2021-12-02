@@ -1,40 +1,48 @@
-const simpleMove = (vector, pos = { forward: 0, depth: 0 }) => {
-  const newPos = {...pos};
-  const items = vector.split(' ');
-  switch (items[0]) {
+const simpleMove = ([direction, size], pos = { forward: 0, depth: 0 }) => {
+  switch (direction) {
     case 'forward':
-      newPos.forward += parseInt(items[1], 10);
-      break;
+      return {
+        ...pos,
+        forward: pos.forward += size,
+      };
     case 'up':
-      newPos.depth -= parseInt(items[1], 10);
-      break;
+      return {
+        ...pos,
+        depth: pos.depth -= size,
+      };
     case 'down':
-      newPos.depth += parseInt(items[1], 10);
-      break;
+      return {
+        ...pos,
+        depth: pos.depth += size,
+      };
   };
-  return newPos;
 };
 
-const move = (vector, pos = { forward: 0, depth: 0, aim: 0 }) => {
-  const newPos = {...pos};
-  const items = vector.split(' ');
-  switch (items[0]) {
+const move = ([direction, size], pos = { forward: 0, depth: 0, aim: 0 }) => {
+  switch (direction) {
     case 'forward':
-      newPos.forward += parseInt(items[1], 10);
-      newPos.depth += pos.aim * parseInt(items[1], 10);
-      break;
+      return {
+        ...pos,
+        forward: pos.forward += size,
+        depth: pos.depth += pos.aim * size,
+      };
     case 'up':
-      newPos.aim -= parseInt(items[1], 10);
-      break;
+      return {
+        ...pos,
+        aim: pos.aim -= size,
+      };
     case 'down':
-      newPos.aim += parseInt(items[1], 10);
-      break;
+      return {
+        ...pos,
+        aim: pos.aim += size,
+      };
   };
-  return newPos;
 };
 
 const navigate = (movement, course) => course
       .split('\n')
+      .map((line) => line.split(' '))
+      .map((vector) => [vector[0], parseInt(vector[1], 10)])
       .reduce((position, vector) => movement(vector, position), { forward: 0, depth: 0, aim: 0 });
 
 const followSimpleCourse = (course) => navigate(simpleMove, course);
