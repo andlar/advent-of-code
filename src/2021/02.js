@@ -1,41 +1,27 @@
 const simpleMove = ([direction, size], pos = { forward: 0, depth: 0 }) => {
-  switch (direction) {
-    case 'forward':
-      return {
-        ...pos,
-        forward: pos.forward += size,
-      };
-    case 'up':
-      return {
-        ...pos,
-        depth: pos.depth -= size,
-      };
-    case 'down':
-      return {
-        ...pos,
-        depth: pos.depth += size,
-      };
+  if (direction === 'forward') {
+    return {
+      ...pos,
+      forward: pos.forward += size,
+    };
+  }
+  return {
+    ...pos,
+    depth: pos.depth += size * (direction === 'up' ? -1 : 1),
   };
 };
 
 const move = ([direction, size], pos = { forward: 0, depth: 0, aim: 0 }) => {
-  switch (direction) {
-    case 'forward':
-      return {
-        ...pos,
-        forward: pos.forward += size,
-        depth: pos.depth += pos.aim * size,
-      };
-    case 'up':
-      return {
-        ...pos,
-        aim: pos.aim -= size,
-      };
-    case 'down':
-      return {
-        ...pos,
-        aim: pos.aim += size,
-      };
+  if (direction === 'forward') {
+    return {
+      ...pos,
+      forward: pos.forward += size,
+      depth: pos.depth += pos.aim * size,
+    };
+  }
+  return {
+    ...pos,
+    aim: pos.aim += size * (direction === 'up' ? -1 : 1),
   };
 };
 
