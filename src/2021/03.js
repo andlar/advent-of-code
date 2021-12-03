@@ -1,20 +1,4 @@
-/*const parseData = (data) => data
-      .split('\n')
-      .map((row) => row
-           .split('')
-           .map((val) => parseInt(val, 10)));
-*/
-const sumBitsHelper = (data) => {
-  const output = new Array(data[0].length).fill(0);
-  data.forEach((row) => {
-      row.forEach((val, idx) => {
-        output[idx] += val;
-      });
-  });
-  return output;
-}
-
-const sumBits = (data) => {
+const countBits = (data) => {
   const output = new Array(data[0].length).fill(0);
   data.forEach((row) => {
       row.forEach((val, idx) => {
@@ -24,57 +8,48 @@ const sumBits = (data) => {
   return output;
 };
 
-const getGamma = (data) => {
-  const isZeroIfEqualOrLessThan = Math.trunc(data.length / 2);
-  const mostFrequent = sumBits(data)
-        .map((val) => val > isZeroIfEqualOrLessThan ? 1 : 0)
-        .join('');
-  return mostFrequent;
-}
+const getGamma = (data) => parseInt(
+  countBits(data)
+    .map((val) => (val > data.length / 2) ? 1 : 0)
+    .join('')
+  , 2);
 
 const getPowerConsumption = (data) => {
-  const gamma = parseInt(getGamma(data), 2);
+  const gamma = getGamma(data);
   const epsilon = Math.pow(2, data[0].length) - gamma - 1;
-  const power = gamma * epsilon;
-  return power;
+  return {
+    gamma,
+    epsilon,
+    power: gamma * epsilon,
+  };
 }
 
-const filterForOxygen = (data, pos) => {
-  const pivot = data.length / 2;
-  const bitCount = sumBitsHelper(data);
-  const output = data
-        .filter((row) => (bitCount[pos] >= pivot) ? (row[pos] === 1) : (row[pos] === 0));
-  return output;
-}
+const forOxygen = (count, pivot, val) => count >= pivot ? (val === 1) : (val === 0);
 
-const filterForCo2 = (data, pos) => {
-  const pivot = data.length / 2;
-  const bitCount = sumBitsHelper(data);
-  const output = data
-        .filter((row) => (bitCount[pos] >= pivot) ? (row[pos] === 0) : (row[pos] === 1));
-  return output;
-}
+const forCo2 = (count, pivot, val) => count >= pivot ? (val === 0) : (val === 1);
 
-const findOxygen = (data, pos = 0) => {
-  if (data.length === 1) {
-    return parseInt(data[0].join(''), 2);
-  }
-  return findOxygen(filterForOxygen(data, pos), pos + 1);
-}
+const filterFor = (data, pos, filterType) => data.filter((row) => filterType(countBits(data)[pos], data.length / 2, row[pos]));
 
-const findCo2 = (data, pos = 0) => {
-  if (data.length === 1) {
-    return parseInt(data[0].join(''), 2);
-  }
-  return findCo2(filterForCo2(data, pos), pos + 1);
+const filterForOxygen = (data, pos) => filterFor(data, pos, forOxygen);
+
+const filterForCo2 = (data, pos) => filterFor(data, pos, forCo2);
+
+const findRating = (data, filter, pos = 0) => (data.length === 1) ? parseInt(data[0].join(''), 2) : findRating(filterFor(data, pos, filter), filter, pos + 1);
+
+const findLifeSupportRating = (data) => {
+  const oxygen = findRating(data, forOxygen);
+  const co2 = findRating(data, forCo2);
+  return {
+    oxygen,
+    co2,
+    lsr: oxygen * co2,
+  };
 }
 
 export {
-  sumBits,
-  getGamma,
+  countBits,
   getPowerConsumption,
   filterForOxygen,
   filterForCo2,
-  findOxygen,
-  findCo2,
+  findLifeSupportRating,
 };
