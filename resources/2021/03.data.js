@@ -9,7 +9,10 @@ const mock = `00100
 10000
 11001
 00010
-01010`;
+01010`.split('\n')
+      .map((row) => row
+           .split('')
+           .map((val) => parseInt(val, 10)));
 
 const entries = `010100010111
 100100100110
@@ -1010,6 +1013,9 @@ const entries = `010100010111
 100001010001
 101011001100
 100100111001
-100010001111`;
+100010001111`.split('\n')
+      .map((row) => row
+           .split('')
+           .map((val) => parseInt(val, 10)));
 
 export { mock, entries };
