@@ -1,35 +1,33 @@
-const findMedian = (values) => {
-  const mid = Math.floor(values.length / 2);
-  return values[mid];
-}
+const findMedian = (values) => values[Math.floor(values.length / 2)];
 
-const findFuelCost = (state, target) => {
-  return state.reduce((cost, cur) => cost += Math.abs(target - cur), 0);
-}
+const findMean = (values) => values.reduce((total, cur) => total += cur, 0) / values.length;
 
-const findExpensiveFuelCost = (state, target) => {
-  return state.reduce((cost, cur) => {
-    const diff = Math.abs(target - cur);
-    return cost + (diff * (diff + 1)) / 2;
-  }, 0);
-}
+const findFuelCost = (state, target) => state.reduce((cost, cur) => cost += Math.abs(target - cur), 0);
 
-const findCheapestLocation = (state) => {
-  const locations = [];
-  for (let i = 0; i < state[state.length - 1]; i++) {
-    locations[i] = {
-      location: i,
-      cost: findExpensiveFuelCost(state, i),
-    }
+const findExpensiveFuelCost = (state, target) => state.reduce((cost, cur) => {
+  const diff = Math.abs(target - cur);
+  return cost + (diff * (diff + 1)) / 2;
+}, 0);
+
+const findCheapestLocationByMean = (state) => {
+  const mean = findMean(state);
+  const low = findExpensiveFuelCost(state, Math.trunc(mean));
+  const high = findExpensiveFuelCost(state, Math.ceil(mean));
+  if (low < high) {
+    return {
+      location: Math.trunc(mean),
+      cost: low,
+    };
   }
-  return locations
-    .sort((a, b) => a.cost - b.cost)
-  [0];
+    return {
+      location: Math.ceil(mean),
+      cost: high,
+    };
 }
 
 export {
   findMedian,
   findFuelCost,
   findExpensiveFuelCost,
-  findCheapestLocation,
+  findCheapestLocationByMean,
 };

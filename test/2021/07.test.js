@@ -2,7 +2,7 @@ import {
   findMedian,
   findFuelCost,
   findExpensiveFuelCost,
-  findCheapestLocation,
+  findCheapestLocationByMean,
 } from '2021/07';
 import { mock, real } from '2021/07.data';
 
@@ -33,7 +33,7 @@ describe('with mock data', () => {
   });
 
   it('should find the cheapest location', () => {
-    const location = findCheapestLocation(state);
+    const location = findCheapestLocationByMean(state);
     expect(location.location).toBe(5);
     expect(location.cost).toBe(168);
   });
@@ -51,7 +51,7 @@ describe('with real data', () => {
   });
 
   it('should find the cheapest location', () => {
-    const location = findCheapestLocation(state);
+    const location = findCheapestLocationByMean(state);
     expect(location.location).toBe(474);
     expect(location.cost).toBe(96798233);
   });
