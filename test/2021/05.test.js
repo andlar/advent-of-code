@@ -1,9 +1,6 @@
 import {
   parseLine,
-  parseOrthoLine,
-  parseDiagLine,
-  findOrthoLines,
-  findNonOrthoLines,
+  mapLine,
   mapOrthoLines,
   mapAllLines,
   countIntersections,
@@ -28,8 +25,8 @@ describe('with mock data', () => {
     data = mock.map((line) => parseLine(line));
   });
 
-  it('should parse a horizontal increasing line', () => {
-    let state = parseOrthoLine(data[0]);
+  it('should parse a line going east', () => {
+    let state = mapLine(data[0]);
     expect(state).toEqual({
       '0,9': 1,
       '1,9': 1,
@@ -40,8 +37,8 @@ describe('with mock data', () => {
     });
   });
 
-  it('should parse a horizontal decreasing line', () => {
-    let state = parseOrthoLine(data[2]);
+  it('should parse a line going west', () => {
+    let state = mapLine(data[2]);
     expect(state).toEqual({
       '3,4': 1,
       '4,4': 1,
@@ -53,8 +50,8 @@ describe('with mock data', () => {
     });
   });
 
-  it('should parse a vertical increasing line', () => {
-    let state = parseOrthoLine(data[4]);
+  it('should parse a line going north', () => {
+    let state = mapLine(data[4]);
     expect(state).toEqual({
       '7,0': 1,
       '7,1': 1,
@@ -64,17 +61,17 @@ describe('with mock data', () => {
     });
   });
 
-  it('should parse a vertical decreasing line', () => {
-    let state = parseOrthoLine(data[3]);
+  it('should parse a line going south', () => {
+    let state = mapLine(data[3]);
     expect(state).toEqual({
       '2,1': 1,
       '2,2': 1,
     });
   });
 
-  it('should increment a horizontal increasing line', () => {
-    let state = parseOrthoLine(data[0]);
-    state = parseOrthoLine(data[0], state);
+  it('should increment a line going east', () => {
+    let state = mapLine(data[0]);
+    state = mapLine(data[0], state);
     expect(state).toEqual({
       '0,9': 2,
       '1,9': 2,
@@ -85,9 +82,9 @@ describe('with mock data', () => {
     });
   });
 
-  it('should increment a horizontal decreasing line', () => {
-    let state = parseOrthoLine(data[2]);
-    state = parseOrthoLine(data[2], state);
+  it('should increment a line going west', () => {
+    let state = mapLine(data[2]);
+    state = mapLine(data[2], state);
     expect(state).toEqual({
       '3,4': 2,
       '4,4': 2,
@@ -99,9 +96,9 @@ describe('with mock data', () => {
     });
   });
 
-  it('should increment a vertical increasing line', () => {
-    let state = parseOrthoLine(data[4]);
-    state = parseOrthoLine(data[4], state);
+  it('should increment a line going north', () => {
+    let state = mapLine(data[4]);
+    state = mapLine(data[4], state);
     expect(state).toEqual({
       '7,0': 2,
       '7,1': 2,
@@ -111,22 +108,17 @@ describe('with mock data', () => {
     });
   });
 
-  it('should increment a vertical decreasing line', () => {
-    let state = parseOrthoLine(data[3]);
-    state = parseOrthoLine(data[3], state);
+  it('should increment a line going south', () => {
+    let state = mapLine(data[3]);
+    state = mapLine(data[3], state);
     expect(state).toEqual({
       '2,1': 2,
       '2,2': 2,
     });
   });
 
-  it('should find orthogonal lines', () => {
-    const lines = findOrthoLines(data);
-    expect(lines.length).toBe(6);
-  });
-
   it('should map ortho lines', () => {
-    const state = mapOrthoLines(findOrthoLines(data));
+    const state = mapOrthoLines(data);
     expect(Object.values(state).length).toBe(21);
     expect(state['0,9']).toBe(2)
     expect(state['1,9']).toBe(2)
@@ -136,17 +128,12 @@ describe('with mock data', () => {
   });
 
   it('should count intersections', () => {
-    const intersections = countIntersections(mapOrthoLines(findOrthoLines(data)));
+    const intersections = countIntersections(mapOrthoLines(data));
     expect(intersections).toBe(5);
   });
 
-  it('should find non-orthogonal lines', () => {
-    const lines = findNonOrthoLines(data);
-    expect(lines.length).toBe(4);
-  });
-
   it('should parse a line going southwest', () => {
-    let state = parseDiagLine(data[1]);
+    let state = mapLine(data[1]);
     expect(state).toEqual({
       '8,0': 1,
       '7,1': 1,
@@ -161,7 +148,7 @@ describe('with mock data', () => {
   });
 
   it('should parse a line going northwest', () => {
-    let state = parseDiagLine(data[5]);
+    let state = mapLine(data[5]);
     expect(state).toEqual({
       '6,4': 1,
       '5,3': 1,
@@ -172,7 +159,7 @@ describe('with mock data', () => {
   });
 
   it('should parse a line going southeast', () => {
-    let state = parseDiagLine(data[8]);
+    let state = mapLine(data[8]);
     expect(state).toEqual({
       '0,0': 1,
       '1,1': 1,
@@ -187,7 +174,7 @@ describe('with mock data', () => {
   });
 
   it('should parse a line going northeast', () => {
-    let state = parseDiagLine(data[9]);
+    let state = mapLine(data[9]);
     expect(state).toEqual({
       '5,5': 1,
       '6,4': 1,
@@ -209,7 +196,7 @@ describe('with real data', () => {
   });
 
   it('should count intersections', () => {
-    const intersections = countIntersections(mapOrthoLines(findOrthoLines(data)));
+    const intersections = countIntersections(mapOrthoLines(data));
     expect(intersections).toBe(5280);
   });
 
