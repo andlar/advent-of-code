@@ -1,4 +1,4 @@
-const parseData = (values) => {
+ const parseData = (values) => {
   const state = {
     0: 0,
     1: 0,
@@ -14,8 +14,7 @@ const parseData = (values) => {
   return state;
 }
 
-const tick = (state) => {
-  const next = {
+const tick = (state) => ({
     0: state[1],
     1: state[2],
     2: state[3],
@@ -25,21 +24,10 @@ const tick = (state) => {
     6: state[7] + state[0],
     7: state[8],
     8: state[0],
-  };
-  return next;
-};
+});
 
-const countFish = (state) => {
-  return state[0] +
-    state[1] +
-    state[2] +
-    state[3] +
-    state[4] +
-    state[5] +
-    state[6] +
-    state[7] +
-    state[8];
-};
+
+const countFish = (state) => [...Array(9).keys()].reduce((total, tick) => total + state[tick], 0);
 
 export {
   parseData,
