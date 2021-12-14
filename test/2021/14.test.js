@@ -9,9 +9,12 @@ import { mock, real } from '2021/14.data';
 describe('while parsing data', () => {
   it('should interpret input', () => {
     let state = parseInput(mock);
-    expect(state.template).toBe('NNCB');
-    expect(state.rules['CH']).toBe('B');
-    expect(state.rules['CN']).toBe('C');
+    expect(state.counts['NN']).toBe(1);
+    expect(state.counts['NC']).toBe(1);
+    expect(state.counts['CB']).toBe(1);
+    expect(state.rules['CH']).toEqual(['CB', 'BH']);
+    expect(state.rules['CN']).toEqual(['CC', 'CN']);
+    expect(state.last).toBe('B');
   });
 });
 
@@ -23,33 +26,20 @@ describe('with mock data', () => {
 
   it('should step once', () => {
     const next = step(state);
-    expect(next.template).toBe('NCNBCHB');
-  });
-
-  it('should step four times', () => {
-    let next = step(state);
-    next = step(next);
-    next = step(next);
-    next = step(next);
-    expect(next.template).toBe('NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB');
+    expect(next.counts['NN']).toBeUndefined()
+    expect(next.counts['NC']).toBe(1);
+    expect(next.counts['CN']).toBe(1);
+    expect(next.counts['NB']).toBe(1);
+    expect(next.counts['BC']).toBe(1);
+    expect(next.counts['CH']).toBe(1);
+    expect(next.counts['HB']).toBe(1);
   });
 
   describe('with ten steps', () => {
     beforeEach(() => {
-      state = step(state);
-      state = step(state);
-      state = step(state);
-      state = step(state);
-      state = step(state);
-      state = step(state);
-      state = step(state);
-      state = step(state);
-      state = step(state);
-      state = step(state);
-    });
-
-    it('should have the right length', () => {
-      expect(state.template.length).toBe(3073);
+      for (let i = 0; i < 10; i++) {
+        state = step(state);
+      }
     });
 
     it('should count occurrences', () => {
@@ -83,12 +73,12 @@ describe('with real data', () => {
     expect(score).toBe(2194);
   });
 
-  xit('should find the score for forty steps', () => {
+  it('should find the score for forty steps', () => {
     for (let i = 0; i < 40; i++) {
       state = step(state);
     }
     const counts = count(state);
     const score = getScore(counts);
-    expect(score).toBe(2194);
+    expect(score).toBe(2360298895777);
   });
 });

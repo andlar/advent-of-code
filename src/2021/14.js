@@ -1,13 +1,20 @@
 const parseInput = (input) => {
   const state = {
-    template: input[0],
+    counts: {},
     rules: {},
+    last: input[0].slice(-1),
   };
-  input
-    .filter((line) => line.includes('->'))
+  input[0].split('')
+    .forEach((val, idx, arr) => {
+      if (idx !== arr.length - 1) {
+        state.counts[`${val}${arr[idx + 1]}`] = (state.counts[`${val}${arr[idx + 1]}`] ?? 0) + 1;
+      }
+    });
+  input.filter((line) => line.includes('->'))
     .forEach((line) => {
       const [key, out] = line.split(' -> ');
-      state.rules[key] = out;
+      const [start, finish] = key.split('');
+      state.rules[key] = [`${start}${out}`, `${out}${finish}`];
     });
   return state;
 };
@@ -15,23 +22,24 @@ const parseInput = (input) => {
 const step = (state) => {
   const next = {
     ...state,
-    template: state.template
-      .split('')
-      .flatMap((input, idx, arr) => ([
-        input,
-        state.rules[`${input}${arr[idx + 1]}`],
-      ]))
-      .join(''),
+    counts: {},
   };
+  Object.entries(state.counts).forEach(([key, value]) => {
+    state.rules[key].forEach((out) => {
+      next.counts[out] = (next.counts[out] ?? 0) + value;
+    });
+  });
   return next;
 };
 
 const count = (state) => {
-  let counts = {};
-  state.template.split('')
-    .forEach((val) => {
-      counts[val] = (counts[val] ?? 0) + 1;
-    });
+  let counts = {
+  };
+  counts[state.last] = 1;
+  Object.entries(state.counts).forEach(([key, value]) => {
+    const val = key.charAt(0);
+    counts[val] = (counts[val] ?? 0) + value;
+  });
   return counts;
 }
 
