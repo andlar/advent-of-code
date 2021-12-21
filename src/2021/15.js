@@ -1,9 +1,21 @@
+const getValue = (state, x, y) => {
+  if (x < 0 || y < 0 || x >= state.size * state.factor || y >= state.size * state.factor) {
+    return undefined;
+  }
+  let value = state.values[`${x % state.size},${y % state.size}`]
+      + Math.floor(x / state.size) + Math.floor(y / state.size);
+  if (value > 9) {
+    value = value % 10 + 1;
+  }
+  return value;
+};
+
 const getMap = (state) => {
   let out = '';
-  for (let y = 0; y < state.size; y++) {
-    for (let x = 0; x < state.size; x++) {
+  for (let y = 0; y < state.size * state.factor; y++) {
+    for (let x = 0; x < state.size * state.factor; x++) {
       const loc = state.map[`${x},${y}`];
-      const value = state.values[`${x},${y}`];
+      const value = getValue(state, x, y);
       let char = value;
       if (loc?.inPath) {
         char = '\x1b[36m' + char + '\x1b[0m'; // cyan
@@ -20,7 +32,7 @@ const getMap = (state) => {
   return out;
 };
 
-const parseInput = (input) => {
+const parseInput = (input, factor = 1) => {
   const values = {};
   input.forEach((row, y) => row.map((value, x) => {
     values[`${x},${y}`] = value;
@@ -30,6 +42,7 @@ const parseInput = (input) => {
     map: { '0,0': { cost: 0 }},
     size: input[0].length,
     fringe: ['0,1', '1,0'],
+    factor,
   };
 };
 
@@ -37,7 +50,7 @@ const getLocation = (state, key) => {
   const [x, y] = key.split(',').map((v) => parseInt(v, 10));
   const location = {
     ...state.map[key],
-    value: state.values[key],
+    value: getValue(state, x, y),
     x,
     y,
   };
@@ -52,7 +65,7 @@ const getLocation = (state, key) => {
         .sort((a, b) => a.cost - b.cost);
   location.source = neighbors[0].key;
   if (!location.cost) {
-    location.heuristic = state.values[key] + (state.size * 2 - x - y - 2) + state.map[location.source].cost;
+    location.heuristic = getValue(state, x, y) + (state.size * 2 - x - y - 2) + state.map[location.source].cost;
   }
   return location;
 };
@@ -65,7 +78,8 @@ const findNext = (state) => {
 };
 
 const isRelevant = (state, key) => {
-  return (state.values[key] && !state.map[key] && !state.fringe.find((val) => val === key));
+  const [x, y] = key.split(',').map((v) => parseInt(v, 10));
+  return (getValue(state, x, y) && !state.map[key] && !state.fringe.find((val) => val === key));
 };
 
 const expandFringe = (state, target) => {
@@ -99,6 +113,7 @@ const step = (state) => {
 };
 
 export {
+  getValue,
   getMap,
   parseInput,
   step,
