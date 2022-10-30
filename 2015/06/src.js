@@ -1,70 +1,29 @@
-const turnOn = (world, sx, sy, ex, ey) => {
+const walk = (world, sx, sy, ex, ey, fn) => {
   return world.map((row, y) => {
     if (y < sy || y > ey) { return row; }
     return row.map((cell, x) => {
       if (x < sx || x > ex) { return cell; }
-      return true;
+      return fn(cell);
     });
   });
-};
+}
 
-const inc = (world, sx, sy, ex, ey) => {
-  return world.map((row, y) => {
-    if (y < sy || y > ey) { return row; }
-    return row.map((cell, x) => {
-      if (x < sx || x > ex) { return cell; }
-      return cell + 1;
-    });
-  });
-};
+const turnOn = (world, sx, sy, ex, ey) => walk(world, sx, sy, ex, ey, () => true);
 
-const turnOff = (world, sx, sy, ex, ey) => {
-  return world.map((row, y) => {
-    if (y < sy || y > ey) { return row; }
-    return row.map((cell, x) => {
-      if (x < sx || x > ex) { return cell; }
-      return false;
-    });
-  });
-};
+const inc = (world, sx, sy, ex, ey) => walk(world, sx, sy, ex, ey, (cell) => cell + 1);
 
-const dec = (world, sx, sy, ex, ey) => {
-  return world.map((row, y) => {
-    if (y < sy || y > ey) { return row; }
-    return row.map((cell, x) => {
-      if (x < sx || x > ex) { return cell; }
-      return Math.max(0, cell - 1);
-    });
-  });
-};
+const turnOff = (world, sx, sy, ex, ey) => walk(world, sx, sy, ex, ey, () => false);
 
-const toggle = (world, sx, sy, ex, ey) => {
-  return world.map((row, y) => {
-    if (y < sy || y > ey) { return row; }
-    return row.map((cell, x) => {
-      if (x < sx || x > ex) { return cell; }
-      return !cell;
-    });
-  });
-};
+const dec = (world, sx, sy, ex, ey) => walk(world, sx, sy, ex, ey, (cell) => Math.max(0, cell - 1));
 
-const dbl = (world, sx, sy, ex, ey) => {
-  return world.map((row, y) => {
-    if (y < sy || y > ey) { return row; }
-    return row.map((cell, x) => {
-      if (x < sx || x > ex) { return cell; }
-      return cell + 2;
-    });
-  });
-};
+const toggle = (world, sx, sy, ex, ey) => walk(world, sx, sy, ex, ey, (cell) => !cell);
 
-const genWorld = (dimensions, init = false) => {
-  return new Array(dimensions).fill(new Array(dimensions).fill(init));
-};
+const dbl = (world, sx, sy, ex, ey) => walk(world, sx, sy, ex, ey, (cell) => cell + 2);
 
-const getNums = (pair) => {
-  return pair.split(',').map((val) => parseInt(val, 10));
-};
+
+const genWorld = (dimensions, init = false) => new Array(dimensions).fill(new Array(dimensions).fill(init));
+
+const getNums = (pair) => pair.split(',').map((val) => parseInt(val, 10));
 
 const parseInstruction = (line, bright = false) => {
   const words = line.split(' ');
@@ -114,18 +73,14 @@ const act = (world, line, bright = false) => {
   return fn(world, instructions.sx, instructions.sy, instructions.ex, instructions.ey);
 };
 
-const countLit = (world) => {
-  return world
+const countLit = (world) => world
     .flatMap((val) => val)
     .filter((cell) => cell)
     .length;
-};
 
-const countBrightness = (world) => {
-  return world
+const countBrightness = (world) => world
     .flatMap((val) => val)
     .reduce((sum, cell) => sum + cell, 0);
-};
 
 export {
   turnOn,
