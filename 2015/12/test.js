@@ -34,20 +34,16 @@ describe('when tokenizing', () => {
 });
 
 describe('when ignoring "red"', () => {
-  it('should drop "red" array elements', () => {
-    expect(dropRed('[1,"red",5]')).toBe('[1,5]');
-    expect(dropRed('["red",5]')).toBe('[,5]');
-    expect(dropRed('[1,"red"]')).toBe('[1]');
-    expect(dropRed('["red"]')).toBe('[]');
-  });
-
   it('should drop "red" object values', () => {
-    expect(dropRed('[1,{"c":"red","b":2},3]')).toBe('[1,,3]');
-    expect(dropRed('[1,{"c":"red","b":{"c":2},"d":3},3]')).toBe('[1,,3]');
-    expect(dropRed('{"d":"red","e":[1,2,3,4],"f":5}')).toBe('');
+    expect(dropRed('[1,{"c":"red","b":2},3]')).toBe('[1,3]');
+    expect(dropRed('[1,{"c":"red","b":{"c":2},"d":3},3]')).toBe('[1,3]');
+    expect(dropRed('[1,{"c":"green","b":{"c":"red"},"d":3},3]')).toBe('[1,{"c":"green","d":3},3]');
+    expect(dropRed('{"d":"red","e":[1,2,3,4],"f":5}')).toBeUndefined();
   });
 
   it('should find the redacted sum', () => {
-    expect(sum(dropRed(real))).toBe(46556); // 46556 is too low
+    // 46556 is too low
+    // 122688 is too high
+    expect(sum(dropRed(real))).toBe(87842);
   });
 });
