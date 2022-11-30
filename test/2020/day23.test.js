@@ -90,7 +90,7 @@ describe('utility functions', () => {
         });
     });
 
-    it('should build a bigger circle', () => {
+    xit('should build a bigger circle', () => {
         cups = makeMap(mock, 20);
         expect(cups.get(3)).toBe(8);
         expect(cups.get(8)).toBe(9);
@@ -118,7 +118,7 @@ describe('utility functions', () => {
 });
 
 describe('solutions', () => {
-    it('should play the basic game for 100 steps', () => {
+    xit('should play the basic game for 100 steps', () => {
         let cups = makeMap(real);
         let result = play(cups, 100, 3, 9);
         let answer = getAnswer(result);

@@ -15,7 +15,7 @@ describe('utility functions', () => {
         expect(rules.get('4')).toBe('"a"');
     });
 
-    describe('when checking messages', () => {
+    xdescribe('when checking messages', () => {
         let rules;
         beforeEach(() => {
             rules = parseRules(mock);

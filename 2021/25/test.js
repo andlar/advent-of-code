@@ -25,7 +25,7 @@ describe('when injesting data', () => {
   });
 });
 
-describe('when moving', () => {
+xdescribe('when moving', () => {
   let state;
   it('should move with simple data', () => {
     state = parseInput(['...>>>>>...']);
