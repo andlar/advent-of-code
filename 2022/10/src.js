@@ -21,7 +21,7 @@ const getTotalStrength = (instructions) => getRegisterValue(instructions, 20)
       + getRegisterValue(instructions, 180)
       + getRegisterValue(instructions, 220);
 
-const getPixel = (instructions, cycle) => Math.abs(getPosition(instructions, cycle) - cycle % 40) <= 1 ? '#' : '.';
+const getPixel = (instructions, cycle) => Math.abs(getPosition(instructions, cycle) - cycle % 40) <= 1 ? '#' : ' ';
 
 const drawRow = (instructions, row) => Array(40)
         .fill(0)
