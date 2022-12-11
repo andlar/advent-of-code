@@ -17,13 +17,16 @@ const makeMonkey = (input) => {
   const lines = input.split('\n');
   return {
     items: lines[1].split(':')[1].split(', ').map((v) => parseInt(v.trim(), 10)),
+    divisor: parseInt(lines[3].split(' ').find((v) => !isNaN(parseInt(v))), 10),
     operate: getOperation(lines[2]),
     throw: getThrow(lines.slice(3, 6)),
     inspected: 0,
   };
 };
 
-const takeTurn = (monkeys, active) => {
+const getDivisor = (monkeys) => monkeys.reduce((div, m) => div * m.divisor, 1);
+
+const takeTurn = (monkeys, active, worried = true) => {
   const newMonkey = {
     ...monkeys[active],
     items: [],
@@ -31,7 +34,7 @@ const takeTurn = (monkeys, active) => {
   };
   const to = monkeys[active].items.reduce((out, v) => {
     const evaluated = newMonkey.operate(v);
-    const newV = Math.floor(evaluated / 3);
+    const newV = worried ? Math.floor(evaluated / 3) : evaluated % getDivisor(monkeys);
     const target = newMonkey.throw(newV);
     if (!out[target]) {
       return {
@@ -57,18 +60,18 @@ const takeTurn = (monkeys, active) => {
   return ret;
 };
 
-const takeRound = (monkeys) => {
+const takeRound = (monkeys, worried = true) => {
   let out = [...monkeys];
   for (let i = 0; i < monkeys.length; i++) {
-    out = takeTurn(out, i);
+    out = takeTurn(out, i, worried);
   }
   return out;
 };
 
-const play = (monkeys, rounds) => {
+const play = (monkeys, rounds, worried = true) => {
   let out = [...monkeys];
   for (let i = 0; i < rounds; i++) {
-    out = takeRound(out);
+    out = takeRound(out, worried);
   }
   return out;
 };
@@ -80,6 +83,7 @@ const getMonkeyBusiness = (monkeys) => {
 
 export {
   makeMonkey,
+  getDivisor,
   takeTurn,
   takeRound,
   play,

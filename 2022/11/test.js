@@ -1,5 +1,6 @@
 import {
   makeMonkey,
+  getDivisor,
   takeTurn,
   takeRound,
   play,
@@ -22,6 +23,11 @@ describe('when parsing monkeys', () => {
     expect(monkey.operate(3)).toBe(9);
     expect(monkey.throw(26)).toBe(1);
     expect(monkey.throw(27)).toBe(3);
+  });
+
+  it('should figure out the divisor', () => {
+    const monkeys = mock.map((m) => makeMonkey(m));
+    expect(getDivisor(monkeys)).toBe(23 * 19 * 13 * 17);
   });
 });
 
@@ -82,5 +88,27 @@ describe('when playing', () => {
     monkeys = real.map((m) => makeMonkey(m));
     const next = play(monkeys, 20);
     expect(getMonkeyBusiness(next)).toBe(90294);
+  });
+
+  it('should know how many items a monkey inspected when super worried', () => {
+    const next = play(monkeys, 20, false);
+    expect(next[0].inspected).toBe(99);
+    expect(next[1].inspected).toBe(97);
+    expect(next[2].inspected).toBe(8);
+    expect(next[3].inspected).toBe(103);
+  });
+
+  it('should know how many items a monkey inspected when super worried for a long time', () => {
+    const next = play(monkeys, 10000, false);
+    expect(next[0].inspected).toBe(52166);
+    expect(next[1].inspected).toBe(47830);
+    expect(next[2].inspected).toBe(1938);
+    expect(next[3].inspected).toBe(52013);
+  });
+
+  it('should figure out monkey business with lots of monkeys when super worried', () => {
+    monkeys = real.map((m) => makeMonkey(m));
+    const next = play(monkeys, 10000, false);
+    expect(getMonkeyBusiness(next)).toBe(18170818354);
   });
 });
