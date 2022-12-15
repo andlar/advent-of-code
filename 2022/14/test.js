@@ -2,9 +2,11 @@ import {
   parseLine,
   buildWorld,
   drawWorld,
+  addWalls,
   drop,
   releaseTheSand,
   countSand,
+  countCaughtSand,
 } from './src';
 
 import { mock, real } from './data';
@@ -29,9 +31,17 @@ describe('when when dealing with the world', () => {
     expect(drawn.length).toBe(110);
     expect(drawn).toBe('......+...\n..........\n..........\n..........\n....#...##\n....#...#.\n..###...#.\n........#.\n........#.\n#########.\n');
   });
+
+  it('should add walls to the world', () => {
+    let world = buildWorld(mock.flatMap(parseLine));
+    world = addWalls(world);
+    expect(world.minX).toBe(492);
+    expect(world.maxX).toBe(505);
+    expect(world.maxY).toBe(11);
+  });
 });
 
-describe('when dropping water', () => {
+describe('when dropping sand', () => {
   it('should drop straight down', () => {
     let world = buildWorld(mock.flatMap(parseLine));
     [world] = drop(world, {x: 500, y: 0});
@@ -103,11 +113,234 @@ describe('when dropping water', () => {
     expect(sand).toBe(24);
   });
 
-  it('should count all the sand', () => {
+  xit('should count all the sand', () => {
     let world = buildWorld(real.flatMap(parseLine));
     world = releaseTheSand(world);
     const sand = countSand(world);
     expect(sand).toBe(1078);
     console.log(drawWorld(world));
   });
+
+  it('should know when sand has plugged the source', () => {
+    let world = buildWorld(mock.flatMap(parseLine));
+    world = addWalls(world);
+    let plugged;
+    for (let i = 0; i < 64; i++) {
+      [world, plugged] = drop(world, {x: 500, y: 0});
+    }
+    expect(plugged).toBe(false);
+    [world, plugged] = drop(world, {x: 500, y: 0});
+    [world, plugged] = drop(world, {x: 500, y: 0});
+    expect(plugged).toBe(true);
+  });
+
+  it('should let the sand flow! (when there are walls', () => {
+    let world = buildWorld(mock.flatMap(parseLine));
+    world = addWalls(world);
+    world = releaseTheSand(world);
+    expect(world['501,1']).toEqual({x: 501, y: 1, v: 'o'});
+  });
+
+  it('should count caught sand', () => {
+    let world = buildWorld(mock.flatMap(parseLine));
+    world = addWalls(world);
+    world = releaseTheSand(world);
+    const sand = countCaughtSand(world);
+    expect(sand).toBe(93);
+  });
+
+  xit('should count all the walled in sand', () => {
+    let world = buildWorld(real.flatMap(parseLine));
+    world = addWalls(world);
+    world = releaseTheSand(world);
+    console.log(drawWorld(world));
+    const sand = countSand(world);
+    // 7790 is too low
+    expect(sand).toBe(7790);
+    console.log(drawWorld(world));
+  });
 });
+
+/*
+  Filled sand:
+    #.........+....................................................#
+    #........ooo...................................................#
+    #.......ooooo..................................................#
+    #......ooooooo.................................................#
+    #.....ooooooooo................................................#
+    #....ooooooooooo...............................................#
+    #...ooooooooooooo..............................................#
+    #..ooooooooooooooo.............................................#
+    #.ooooooooooooooooo............................................#
+    #ooooooooooooooooooo...........................................#
+    #oooooooooooooooooooo..........................................#
+    #ooooooooooooooooooooo.........................................#
+    #oooooooooooooooooooooo........................................#
+    #ooooooooooooooooooooooo.......................................#
+    #oooooooooooo#ooooooooooo......................................#
+    #oo#o#ooooooo#oooooooooooo.....................................#
+    #oo#o#ooooooo#o#ooooooooooo....................................#
+    #oo#o#ooo#o#o#o#oooooooooooo...................................#
+    #oo#o#ooo#o#o#o#ooooooooooooo..................................#
+    #oo#o#o#o#o#o#o#oooooooooooooo.................................#
+    #oo#o#o#o#o#o#o#ooooooooooooooo................................#
+    #oo#o#o#o#o#o#o#oooooooooooooooo...............................#
+    #oo#o#o#o#o#o#o#ooooooooooooooooo..............................#
+    #oo#############oooooooooooooooooo.............................#
+    #ooo...........oooooooooooooooooooo............................#
+    #oooo.........oooooooooooooooooooooo...........................#
+    #ooooo.......o#####oooooooooooooooooo..........................#
+    #oooooo.....ooo...oooooooooooooooooooo.........................#
+    #ooooooo...#####.#####ooooooooooooooooo........................#
+    #oooooooo............ooooooooooooooooooo.......................#
+    #ooooooo#####.#####.#####oooooooooooooooo......................#
+    #oooooooo...............oooooooooooooooooo.....................#
+    #oooo#####.#####.#####.#####ooooooooooooooo....................#
+    #ooooo.....................ooooooooooooooooo...................#
+    #o#####.#####.#####.#####.#####oooooooooooooo..................#
+    #oo...........................oooooooooooooooo.................#
+    #ooo.........................o#ooooooo#oooooooo................#
+    #oooo.......................oo#########ooooooooo...............#
+    #ooooo.....................oooo.......ooooooooooo..............#
+    #oooooo...................oooooo.....ooooooooooooo.............#
+    #ooooooo.................o######o...ooooooooooooooo............#
+    #oooooooo...............ooo....ooo.ooooooooooooooooo...........#
+    #ooooooooo.............ooooo..ooooooooooooooooooooooo..........#
+    #oooooooooo...........o######o######oooooooooooooooooo.........#
+    #ooooooooooo.........ooo....ooo....oooooooooooooooooooo........#
+    #oooooooooooo.......ooooo..ooooo..oooooooooooooooooooooo.......#
+    #ooooooooooooo.....o######o######o######ooooooooooooooooo......#
+    #oooooooooooooo...ooo....ooo....ooo....ooooooooooooooooooo.....#
+    #ooooooooooooooo.ooooo..ooooo..ooooo..ooooooooooooooooooooo....#
+    #oooooooooooooooo######o######o######o######oooooooooooooooo...#
+    #ooooooooooooooooo....ooo....ooo....ooo....oooooooooooooooooo..#
+    #oooooooooooooooooo..ooooo..ooooo..ooooo..oooooooooooooooooooo.#
+    #ooooooooooooo######o######o######o######o######ooooooooooooooo#
+    #oooooooooooooo....ooo....ooo....ooo....ooo....oooooooooooooooo#
+    #ooooooooooooooo..ooooo..ooooo..ooooo..ooooo..ooooooooooooooooo#
+    #oooooooooooooooo#ooooooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo#ooo#ooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo#ooo#ooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooo#o#ooo#ooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooo#o#ooo#ooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooo#o#o#o#ooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooo#o#o#o#ooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooo#o#o#o#o#ooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooo#o#o#o#o#ooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooo#o#o#o#o#ooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooo#########ooooooooooooooooooooooooooooooooooooooo#
+    #ooooooooooooooo.......oooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo.....ooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo#...oooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo#################ooooooooooooooooooooooooooooo#
+    #ooooooooooooooooo...............oooooooooooooooooooooooooooooo#
+    #oooooooooooooooooo........#....ooooo#ooooooooooooooooooooooooo#
+    #ooooooooooooooooooo.......###########ooooooooooooooooooooooooo#
+    #oooooooooooooooooooo................oooooooooooooooooooooooooo#
+    #ooooooooooooooooooooo..............ooooooooooooooooooooooooooo#
+    #oooooooooooooooooooooo............#ooooo#ooooooooooooooooooooo#
+    #ooooooooooooooooooooooo...........#ooooo#ooooooooooooooooooooo#
+    #oooooooooooooooooooooooo..#########ooooo##oooooooooooooooooooo#
+    #ooooooooooooooooooooooooo.#.......ooooooo#oooooooooooooooooooo#
+    #oooooooooooooooooooooooooo#......oooooooo#oooooooooooooooooooo#
+    #oooooooooooooooooooooooooo#.....ooooooooo#oooooooooooooooooooo#
+    #oooooooooooooooooooooooooo#....oooooooooo#oooooooooooooooooooo#
+    #oooooooooooooooooooooooooo#...ooooooooooo#oooooooooooooooooooo#
+    #oooooooooooooooooooooooooo################oooooooooooooooooooo#
+    #ooooooooooooooooooooooooooo..............ooooooooooooooooooooo#
+    #oooooooooooooooooooooooooooo............oooooooooooooooooooooo#
+    #ooooooooooooooooooooooooooooo..........#oooooooooooo#ooooooooo#
+    #oooooooooooooooooooooooooooooo.........##############ooooooooo#
+    #ooooooooooooooooooooooooooooooo.....................oooooooooo#
+    #oooooooooooooooooooooooooooooooo...................ooooooooooo#
+    #ooooooooooooooooooooooooooooooooo.................oooooooooo#o#
+    #oooooooooooooooooooooooooooooooooo...............ooooooooooo#o#
+    #ooooooooooooooooooooooooooooooooooo...........#.oooo#ooooooo#o#
+    #oooooooooooooooooooooooooooooooooooo........#.#ooooo#ooooo#o#o#
+    #ooooooooooooooooooooooooooooooooooooo.......#.#ooooo#ooooo#o#o#
+    #oooooooooooooooooooooooooooooooooooooo......#.#ooooo#ooo#o#o#o#
+    #ooooooooooooooooooooooooooooooooooooooo.....#.#ooo#o#ooo#o#o#o#
+    #oooooooooooooooooooooooooooooooooooooooo....#.#ooo#o#o#o#o#o#o#
+    #ooooooooooooooooooooooooooooooooooooooooo...#.#ooo#o#o#o#o#o#o#
+    #oooooooooooooooooooooooooooooooooooooooooo..#.#o#o#o#o#o#o#o#o#
+    #ooooooooooooooooooooooooooooooooooooooooooo.#################o#
+    #oooooooooooooooooooooooooooooooooooooooooooo................oo#
+    #ooooooooooooooooooooooooooooooooooooooooooooo..............ooo#
+    #ooooooooooo#o#oooooooooooooooooooooooooooooooo............oooo#
+    #ooooooooooo#o#ooooooooooooooooooooooooooooooooo..........ooooo#
+    #ooooooo#####o####ooooooooooooooooooooooooooooooo........oooooo#
+    #ooooooo#...ooo..#oooooooooooooooooooooooooooooooo......ooooooo#
+    #ooooooo#..ooooo.#ooooooooooooooooooooooooooooooooo....oooooooo#
+    #ooooooo#.ooooooo#oooooooooooooooooooooooooooooooooo..ooooooooo#
+    #ooooooo#oooooooo#ooooooooooooooooooooooooooooooooooooooooooooo#
+    #ooooooo#oooooooo#ooooooooooooooooooooooooooooooooooooooooooooo#
+    #ooooooo#oooooooo#ooooooooooooooooooooooooooooooooooooooooooooo#
+    #ooooooo##########ooooooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooo........oooooooooooooooooooooooooooooooooooooooooooooo#
+    #ooooooooo......ooooooooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooo....#oooo#oooooooooooooooooooooooooooooooooooooooooo#
+    #ooooooooooo...#oooo#oooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooo..#oooo#oooooooooooooooooooooooooooooooooooooooooo#
+    #ooooooooooooo.#oooo#oooooooooooooooooooooooooooooooooooooooooo#
+    #ooooooooooo####oooo#####oooooooooooooooooooooooooooooooooooooo#
+    #ooooooooooo#..oooooo...#oooooooooooooooooooooooooooooooooooooo#
+    #ooooooooooo#.oooooooo..#oooooooooooooooooooooooooooooooooooooo#
+    #ooooooooooo#oooooooooo.#oooooooooooooooooooooooooooooooooooooo#
+    #ooooooooooo#ooooooooooo#oooooooooooooooooooooooooooooooooooooo#
+    #ooooooooooo#ooooooooooo#oooooooooooooooooooooooooooooooooooooo#
+    #ooooooooooo#ooooooooooo#oooooooooooooooooooooooooooooooooooooo#
+    #ooooooooooo#############oooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooo...........ooooooooooooooooooooooooooooooooooooooo#
+    #ooooooooooooo.........oooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooo.......oo#oo#ooooooooooooooooooooooooooooooooooo#
+    #ooooooooooooooo.....ooo#oo#ooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo...oooo#oo#ooooooooooooooooooooooooooooooooooo#
+    #ooooooooooooooooo.ooooo#oo#ooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo########oo##oooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo#......oooo#oooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo#.....ooooo#oooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo#....oooooo#oooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo#...ooooooo#oooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo#..oooooooo#oooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo#.ooooooooo#oooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo#oooooooooo#oooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooo############oooooooooooooooooooooooooooooooooo#
+    #ooooooooooooooooo..........ooooooooooooooooooooooooooooooooooo#
+    #oooooooooooooooooo........oooooooooooooooooooooooooooooooooooo#
+    #ooooooooooooooooooo......o#####ooooooooooooooooooooooooooooooo#
+    #oooooooooooooooooooo....ooo...oooooooooooooooooooooooooooooooo#
+    #ooooooooooooooooooooo..ooooo.ooooooooooooooooooooooooooooooooo#
+    #ooooooooooooooooooooooo#####o#####oooooooooooooooooooooooooooo#
+    #oooooooooooooooooooooooo...ooo...ooooooooooooooooooooooooooooo#
+    #ooooooooooooooooooooooooo.ooooo.oooooooooooooooooooooooooooooo#
+    #oooooooooooooooooooo#####o#####o#####ooooooooooooooooooooooooo#
+    #ooooooooooooooooooooo...ooo...ooo...oooooooooooooooooooooooooo#
+    #oooooooooooooooooooooo.ooooo.ooooo.ooooooooooooooooooooooooooo#
+    #ooooooooooooooooo#####o#####o#####o#####oooooooooooooooooooooo#
+    #oooooooooooooooooo...ooo...ooo...ooo...ooooooooooooooooooooooo#
+    #ooooooooooooooooooo.ooooo.ooooo.ooooo.oooooooooooooooooooooooo#
+    #oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooo#ooooooo#ooooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooo#ooooooo#ooooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooooo#ooooooo#ooooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooo#o#ooooooo#ooooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooo#o#ooooooo#ooooooooooooooooooooooooooooooooooooooooooo#
+    #oooooooo#o#ooooo#o#o#o#ooooooooooooooooooooooooooooooooooooooo#
+    #oooooooo#o#o#ooo#o#o#o#o#ooooooooooooooooooooooooooooooooooooo#
+    #oooooooo#o#o#o#o#o#o#o#o#ooooooooooooooooooooooooooooooooooooo#
+    #oooooo#o#o#o#o#o#o#o#o#o#ooooooooooooooooooooooooooooooooooooo#
+    #oooooo###################ooooooooooooooooooooooooooooooooooooo#
+    #ooooooo.................oooooooooooooooooooooooooooooooooooooo#
+    #oooooooo...............ooooooooooooooooooooooooooooooooooooooo#
+    #ooooooooo.............######oooooooooooooooooooooooooooooooooo#
+    #oooooooooo.................ooooooooooooooooooooooooooooooooooo#
+    #ooooooooooo........######.######oooooooooooooooooooooooooooooo#
+    #oooooooooooo...................ooooooooooooooooooooooooooooooo#
+    #ooooooooooooo...######.######.######oooooooooooooooooooooooooo#
+    #oooooooooooooo.....................ooooooooooooooooooooooooooo#
+    #ooooooooooooo######.######.######.######oooooooooooooooooooooo#
+    #oooooooooooooo.........................ooooooooooooooooooooooo#
+    #oooooooooo######.######.######.######.######oooooooooooooooooo#
+    #ooooooooooo................................ooooooooooooooooooo#
+    ################################################################
+*/

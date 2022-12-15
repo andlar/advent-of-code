@@ -35,6 +35,23 @@ const buildWorld = (values) => {
   }), { minX, maxX, maxY });
 };
 
+const addWalls = (world) => {
+  let out = {
+    ...world,
+    minX: world.minX - 2,
+    maxX: world.maxX + 2,
+    maxY: world.maxY + 2,
+  };
+  for (let y = 0; y <= out.maxY; y++) {
+    out[`${out.minX},${y}`] = {x: out.minX, y, v: '#'};
+    out[`${out.maxX},${y}`] = {x: out.maxX, y, v: '#'};
+  };
+  for (let x = out.minX; x <= out.maxX; x++) {
+    out[`${x},${out.maxY}`] = {x, y: out.maxY, v: '#'};
+  };
+  return out;
+};
+
 const drawWorld = (world) => {
   let out = '', key;
   for (let y = 0; y <= world.maxY; y++) {
@@ -69,6 +86,7 @@ const drop = (world, start) => {
       x = x + 1;
       continue;
     }
+    if (out[`${x},${y}`]?.v === '+') { return [out, true]; };
     out[`${x},${y}`] = {x, y, v: 'o'};
     canMove = false;
   }
@@ -88,11 +106,34 @@ const countSand = (world) => Object
       .filter((c) => c.v === 'o')
       .length;
 
+const factAdd = (v) => {
+  if (v % 2 === 0) { return (v / 2) * (v + 1); }
+  return (v + factAdd(v - 1));
+};
+
+const findHeight = (world, x) => {
+  let y = 0;
+  while (!world[`${x},${y}`]) {
+    y += 1;
+  }
+  return world.maxY - y - 1;
+};
+
+const countCaughtSand = (world) => Object
+      .values(world)
+      .filter((c) => c.v === 'o')
+      .length
+      + (factAdd(findHeight(world, world.minX + 1)))
+      + (factAdd(findHeight(world, world.maxX - 1)))
+      + 1;
+
 export {
   parseLine,
   buildWorld,
+  addWalls,
   drawWorld,
   drop,
   releaseTheSand,
   countSand,
+  countCaughtSand,
 };
