@@ -52,18 +52,6 @@ const addWalls = (world) => {
   return out;
 };
 
-const drawWorld = (world) => {
-  let out = '', key;
-  for (let y = 0; y <= world.maxY; y++) {
-    for (let x = world.minX; x <= world.maxX; x++) {
-      key = `${x},${y}`;
-      out += Object.keys(world).includes(key) ? world[key].v : '.';
-    };
-    out += '\n';
-  };
-  return out;
-};
-
 const drop = (world, start) => {
   let out = {
     ...world,
@@ -131,7 +119,6 @@ export {
   parseLine,
   buildWorld,
   addWalls,
-  drawWorld,
   drop,
   releaseTheSand,
   countSand,

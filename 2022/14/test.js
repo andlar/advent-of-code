@@ -1,15 +1,14 @@
 import {
   parseLine,
   buildWorld,
-  drawWorld,
   addWalls,
   drop,
   releaseTheSand,
   countSand,
   countCaughtSand,
 } from './src';
-
 import { mock, real } from './data';
+import { drawWorld } from '../util';
 
 describe('when when dealing with the world', () => {
   it('should turn lines into stones', () => {
@@ -111,6 +110,7 @@ describe('when dropping sand', () => {
     world = releaseTheSand(world);
     const sand = countSand(world);
     expect(sand).toBe(24);
+    //console.log(drawWorld(world));
   });
 
   it('should count all the sand', () => {
@@ -147,6 +147,7 @@ describe('when dropping sand', () => {
     world = releaseTheSand(world);
     const sand = countCaughtSand(world);
     expect(sand).toBe(93);
+    //console.log(drawWorld(world));
   });
 
   it('should count all the walled in sand', () => {

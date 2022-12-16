@@ -1,3 +1,5 @@
+import { md } from '../util';
+
 const makeGrid = (rows) => {
   let s, e;
   const grid = rows.reduce((acc, row, y) => {
@@ -20,8 +22,6 @@ const makeGrid = (rows) => {
   }, []);
   return [grid, s, e];
 };
-
-const md = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 
 const populateGrid = (grid, s, e, down = false) => grid.map((c) => ({
   ...c,
