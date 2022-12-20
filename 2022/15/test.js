@@ -4,6 +4,9 @@ import {
   cannotHasBeacons,
   countCants,
   countCantsCountingBeacons,
+  findBlanks,
+  findBeacon,
+  getTuningFrequency,
 } from './src';
 import { mock, real } from './data';
 import { drawWorld } from '../util';
@@ -62,5 +65,33 @@ describe('when looking for beacons', () => {
     const world  = parseInput(real);
     const cants = countCantsCountingBeacons(world, 2000000);
     expect(cants).toBe(5142231);
+  });
+});
+
+describe('when looking for an unfound beacon', () => {
+  it('should look for blanks', () => {
+    const world = parseInput(mock);
+    const [blanks] = findBlanks(world, 20);
+    expect(blanks).toEqual(['-3:13', '15:25']);
+  });
+
+  it('should find the beacon', () => {
+    const world = parseInput(mock);
+    const [x, y] = findBeacon(world, 20);
+    expect(x).toBe(14);
+    expect(y).toBe(11);
+  });
+
+  it('should know the tuning frequency', () => {
+    const x = 14, y = 11;
+    const frequency = getTuningFrequency(x, y);
+    expect(frequency).toBe(56000011);
+  });
+
+  xit('should know the tuning frequency of the real beacon', () => { // runs for too long (800s as of right now)
+    const world = parseInput(real);
+    const [x, y] = findBeacon(world, 4000000);
+    const frequency = getTuningFrequency(x, y);
+    expect(frequency).toBe(56000011);
   });
 });

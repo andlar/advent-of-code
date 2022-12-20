@@ -50,10 +50,30 @@ const countCantsCountingBeacons = (world, y) => {
   return beaconCount;
 };
 
+const findBlanks = (world, maxY) => {
+  let ranges, y;
+  for (y = 0; y <= maxY; y++) {
+    ranges = unionRanges(cannotHasBeacons(world, y));
+    if (ranges.length === 2) { break; }
+  }
+  return [ranges, y];
+};
+
+const findBeacon = (world, maxY) => {
+  const [ranges, y] = findBlanks(world, maxY);
+  const x = parseInt(ranges[0].split(':')[1], 10) + 1;
+  return [x, y];
+};
+
+const getTuningFrequency = (x, y) => x * 4000000 + y;
+
 export {
   parseInput,
   cannotHasBeacon,
   cannotHasBeacons,
   countCants,
   countCantsCountingBeacons,
+  findBlanks,
+  findBeacon,
+  getTuningFrequency,
 };
