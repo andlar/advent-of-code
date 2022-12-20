@@ -38,6 +38,12 @@ describe('when when dealing with the world', () => {
     expect(world.maxX).toBe(505);
     expect(world.maxY).toBe(11);
   });
+
+  it('should draw a big one', () => {
+    const world = buildWorld(real.flatMap(parseLine));
+    const drawn = drawWorld(world);
+    expect(drawn.length).toBe(10858);
+  });
 });
 
 describe('when dropping sand', () => {

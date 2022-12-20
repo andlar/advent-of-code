@@ -21,7 +21,7 @@ const parseLine = (line) => {
 };
 
 const buildWorld = (values) => {
-  let minX = 500, maxX = 500, maxY = 0;
+  let minX = 500, maxX = 500, minY = 0, maxY = 0;
   return values.map((v) => {
     const [x, y] = v.split(',').map((c) => parseInt(c, 10));
     if (x < minX) { minX = x; }
@@ -32,7 +32,7 @@ const buildWorld = (values) => {
     ...world,
     '500,0': {x: 500, y: 0, v: '+'},
     [`${point.x},${point.y}`]: point,
-  }), { minX, maxX, maxY });
+  }), { minX, maxX, minY, maxY });
 };
 
 const addWalls = (world) => {
