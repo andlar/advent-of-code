@@ -14,6 +14,18 @@ lgvd: ljgn * ptdq
 drzm: hmdt - zczc
 hmdt: 32`.split('\n');
 
+const mock2 = `root: juli + josi
+juli: amee + alex
+amee: buki * abby
+buki: 5
+abby: 4
+alex: 4
+josi: benj / mark
+benj: 360
+mark: emly - humn
+emly: 34
+humn: 0`.split('\n');
+
 const real = `cpjw: 3
 wnsc: 11
 lqqs: 2
@@ -2178,4 +2190,4 @@ tslp: 2
 ndzm: 3
 tfst: 2`.split('\n');
 
-export { mock, real };
+export { mock, mock2, real };
